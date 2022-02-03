@@ -1,0 +1,53 @@
+@import "../../../styles/variables.scss";
+
+.container {
+  display: flex;
+  align-items: center;
+  column-gap: 16px;
+  padding: 24px 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 320px;
+  user-select: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.container:hover {
+  transform: scale(1.05);
+  transition: all 0.2s ease;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  width: 32px;
+  height: 32px;
+  transition: all 0.2s ease;
+
+  path {
+    color: #fff;
+  }
+}
+
+.checked {
+  background-color: $accent-400;
+  border: 2px solid $accent-400;
+  transition: all 0.2s ease;
+}
+
+.name {
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.point {
+  width: 8px;
+  height: 8px;
+  border-radius: 100px;
+  background-color: #fff;
+}

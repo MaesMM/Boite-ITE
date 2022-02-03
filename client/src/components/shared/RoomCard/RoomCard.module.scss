@@ -1,0 +1,139 @@
+@import "../../../styles/variables.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+  width: 289px;
+  height: 289px;
+  box-sizing: border-box;
+  background-color: #fff;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+  border-radius: 16px;
+}
+
+.header {
+  width: 100%;
+  display: flex;
+
+  justify-content: space-between;
+  height: 40px;
+  align-items: center;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  column-gap: 16px;
+  text-decoration: none;
+  h2 {
+    font-weight: 600;
+    font-size: 1.25rem;
+  }
+}
+
+.color {
+  --color: #000;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background-color: var(--color);
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transform: translateY(8px);
+}
+
+.batteryContainer {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.batteryIcon {
+  width: 40px;
+  height: 40px;
+}
+
+.batteryIndicatorContainer {
+  position: relative;
+  display: flex;
+}
+
+.battery {
+  position: absolute;
+  top: 14px;
+  left: 5px;
+  width: 26px;
+  height: 12px;
+}
+
+.batteryIndicator {
+  width: var(--battery);
+  height: 100%;
+  border-radius: 3px;
+}
+
+.high {
+  background: linear-gradient(45deg, $green-400, $green-600);
+}
+.medium {
+  background: linear-gradient(45deg, $red-500, $yellow-600);
+}
+
+.low {
+  background: linear-gradient(45deg, $red-400, $red-400);
+}
+
+.link {
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  row-gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.detail {
+  display: flex;
+  align-items: center;
+  font-size: 1.1rem;
+  font-weight: 500;
+  column-gap: 16px;
+}
+
+.thermometer,
+.drop {
+  width: 36px;
+  height: 36px;
+}
+
+.drop {
+  width: 26px;
+  height: 26px;
+}
+
+.sun {
+  width: 32px;
+  height: 32px;
+}
+
+.icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+}

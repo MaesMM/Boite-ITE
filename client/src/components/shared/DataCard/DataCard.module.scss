@@ -1,0 +1,88 @@
+@import "../../../styles/variables.scss";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 264px;
+  row-gap: 8px;
+  min-width: 160px;
+  min-height: 96px;
+  height: fit-content;
+  padding: 16px 32px 16px 16px;
+  box-sizing: border-box;
+  border-radius: 16px;
+  color: inherit;
+  user-select: none;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.value {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.plain {
+  background-color: #fff;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.125);
+}
+
+.temperature {
+  background: linear-gradient(45deg, #9ca9f2, #ff9999);
+  box-shadow: 0 16px 40px rgba(216, 159, 198, 0.5);
+
+  * {
+    color: #fff;
+  }
+}
+
+.humidity,
+.minTemp {
+  background: linear-gradient(45deg, $blue-400, $blue-700);
+  box-shadow: 0 16px 40px rgba($color: $blue-400, $alpha: 0.4);
+
+  * {
+    color: #fff;
+  }
+}
+
+.maxTemp {
+  background: linear-gradient(45deg, #f76e6e, #ffdd99);
+  box-shadow: 0 16px 40px rgba($color: $red-400, $alpha: 0.3);
+
+  * {
+    color: #fff;
+  }
+}
+
+.good {
+  background: linear-gradient(45deg, $green-400, $green-600);
+  box-shadow: 0 16px 40px rgba($color: $green-400, $alpha: 0.4);
+
+  * {
+    color: #fff;
+  }
+}
+
+.average {
+  background: linear-gradient(45deg, $red-500, $yellow-600);
+  box-shadow: 0 16px 40px rgba($color: $red-600, $alpha: 0.4);
+
+  * {
+    color: #fff;
+  }
+}
+
+.bad {
+  background: linear-gradient(45deg, $red-400, $red-600);
+  box-shadow: 0 16px 40px rgba($color: $red-400, $alpha: 0.4);
+
+  * {
+    color: #fff;
+  }
+}

@@ -1,0 +1,62 @@
+@import "../../../styles/variables.scss";
+
+.container {
+  display: flex;
+  align-items: center;
+  column-gap: 16px;
+  padding: 16px;
+  box-sizing: border-box;
+  border-radius: 16px;
+  width: clamp(320px, 100%, 960px);
+  margin-bottom: 16px;
+}
+
+.error {
+  background-color: $red-800;
+
+  * {
+    color: $red-400;
+  }
+}
+.success {
+  background-color: $green-800;
+  * {
+    color: $green-400;
+  }
+}
+.warning {
+  background-color: $yellow-800;
+  * {
+    color: $yellow-400;
+  }
+}
+.info {
+  background-color: $blue-800;
+  * {
+    color: $blue-400;
+  }
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 12px;
+}
+
+.title {
+  line-height: 1rem;
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+.message {
+  margin: 0;
+  line-height: 1rem;
+  white-space: pre-line;
+}

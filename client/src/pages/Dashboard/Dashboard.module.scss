@@ -1,0 +1,31 @@
+@import "../../styles/variables.scss";
+
+.messages {
+  margin-bottom: 80px;
+}
+
+.roomList {
+  display: flex;
+  max-width: 1024px;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin: 32px 0;
+}
+
+.create {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
+  background-color: white;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+  stroke: $grey-600;
+}
+
+.plus {
+  width: 96px;
+  height: 96px;
+  color: $grey-600;
+}

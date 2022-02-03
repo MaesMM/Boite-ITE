@@ -1,0 +1,72 @@
+@import "../../../styles/variables.scss";
+
+.switch {
+  width: 56px;
+  height: 32px;
+  padding: 4px;
+  box-sizing: border-box;
+  border-radius: 100px;
+  background-color: $grey-400;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+.on {
+  background-color: $accent-400;
+  transition: all 0.4s ease;
+
+  .thumb {
+    // transform: translateX(24px);
+    // transition: all 0.2s ease;
+    animation: thumb 0.3s ease forwards;
+  }
+}
+.off {
+  background-color: $grey-400;
+  transition: all 0.4s ease;
+
+  .thumb {
+    // transform: translateX(24px);
+    // transition: all 0.2s ease;
+    animation: backThumb 0.3s ease forwards;
+  }
+}
+
+.thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 100px;
+  background-color: #fff;
+  box-shadow: 0 4px 40px rgba(0, 0, 0, 0.25);
+  transition: all 0.4s ease;
+}
+
+@keyframes thumb {
+  0% {
+    width: 24px;
+    transform: translateX(0);
+  }
+  50% {
+    width: 32px;
+    transform: translateX(12px);
+  }
+  100% {
+    width: 24px;
+    transform: translateX(24px);
+  }
+}
+@keyframes backThumb {
+  0% {
+    width: 24px;
+    transform: translateX(24px);
+  }
+  50% {
+    width: 32px;
+    transform: translateX(12px);
+  }
+  100% {
+    width: 24px;
+    transform: translateX(0);
+  }
+}

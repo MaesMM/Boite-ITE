@@ -1,0 +1,85 @@
+@import "../../styles/variables.scss";
+
+.calendar {
+  min-width: 320px;
+  width: fit-content;
+}
+
+.header {
+  display: flex;
+  justify-content: space-evenly;
+  height: 56px;
+  background-color: $accent-400;
+  color: #fff;
+  align-items: center;
+  svg {
+    color: $accent-800;
+    cursor: pointer;
+  }
+}
+
+.current {
+  font-size: 1.2rem;
+  font-weight: 500;
+  user-select: none;
+}
+
+.right svg {
+  transform: rotate(180deg);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  row-gap: 8px;
+}
+
+.week {
+  display: flex;
+  column-gap: 8px;
+  margin: 0 16px;
+}
+
+.dayName {
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.day {
+  font-size: calc(1rem + 0.1vw);
+  display: flex;
+  user-select: none;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.day:not(.dayName):hover {
+  background-color: $accent-800;
+  transition: all 0.2s ease;
+}
+
+.isToday {
+  color: $accent-400;
+  font-size: calc(1rem + 0.15vw);
+  font-weight: 900;
+}
+
+.isNotSelectable {
+  color: #acacac;
+}
+
+.selected {
+  background-color: $accent-800;
+  color: $accent-400;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.hidden {
+  visibility: hidden;
+}

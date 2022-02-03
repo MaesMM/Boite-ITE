@@ -1,0 +1,12 @@
+@import "../../styles/variables.scss";
+
+.precision {
+  margin: 0;
+  color: rgba($color: $text-400, $alpha: 0.75);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  row-gap: 24px;
+}

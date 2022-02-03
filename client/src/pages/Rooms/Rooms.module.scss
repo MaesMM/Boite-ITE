@@ -1,0 +1,48 @@
+@import "../../styles/variables.scss";
+
+// .add {
+//   display: flex;
+//   justify-content: center;
+//   align-self: center;
+//   width: 80px;
+//   height: 80px;
+//   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+//   border-radius: 16px;
+//   transition: all 0.2s ease;
+//   margin: 40px;
+
+//   svg {
+//     align-self: center;
+//     width: 64px;
+//     height: 64px;
+//     stroke: $grey-600;
+//     stroke-width: 2;
+//   }
+// }
+
+// .add:hover {
+//   transform: translateY(-4px) scale(1.1);
+//   transition: all 0.2s ease;
+// }
+
+.title {
+  display: flex;
+  column-gap: 16px;
+  h2 {
+    margin: 0;
+  }
+}
+
+.add {
+  stroke: $text-400;
+  width: 40px;
+  height: 40px;
+  transform: translateY(4px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.add:hover {
+  transform: translateY(4px) scale(1.1);
+  transition: all 0.2s ease;
+}

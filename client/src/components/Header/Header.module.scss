@@ -1,0 +1,123 @@
+@import "../../styles/variables.scss";
+
+.header {
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: fit-content;
+  height: 72px;
+  padding: 0 40px;
+  background-color: #fff;
+  border-radius: 0 0 0 16px;
+  box-sizing: border-box;
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.05);
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  column-gap: 16px;
+  height: 100%;
+}
+
+.bell,
+.notificationContainer {
+  width: 30px;
+  height: 30px;
+}
+
+.notificationContainer {
+  position: relative;
+}
+
+.notification {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 6px;
+  line-height: 0;
+  font-size: 0.8rem;
+  font-weight: 800;
+  background-color: $red-400;
+  color: #fff;
+  border-radius: 100%;
+}
+
+.profile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+}
+
+.userImg {
+  width: 48px;
+  height: 48px;
+  border-radius: 100px;
+}
+
+.profile:hover .profileNav {
+  padding: 4px 16px;
+  max-height: 156px;
+  opacity: 1;
+  transition: all 0.5s ease;
+}
+
+.profile:hover svg {
+  transition: all 0.3s ease;
+  transform: rotate(-180deg);
+}
+
+.profile svg {
+  transition: all 0.3s 0.25s ease;
+}
+
+.profileNav {
+  position: absolute;
+  top: 72px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  max-height: 0;
+  height: 156px;
+  overflow: hidden;
+  width: 120px;
+  padding: 0 16px;
+  opacity: 0;
+  background-color: #fff;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  font-weight: 500;
+  transition: all 0.5s 0.25s ease;
+
+  .name {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    line-height: 0;
+    height: 40px;
+    margin: 0;
+    border-top: solid 2px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+  }
+
+  a:hover {
+    color: $accent-400;
+    transition: all 0.2s ease;
+  }
+}
