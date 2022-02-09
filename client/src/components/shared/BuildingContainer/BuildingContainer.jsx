@@ -1,6 +1,8 @@
 import RoomCard from "../RoomCard/RoomCard";
 import styles from "./BuildingContainer.module.scss";
 
+import { ReactComponent as Plus } from "../../../assets/icons/Plus.svg";
+
 import { useState, useEffect } from "react";
 
 const BuildingContainer = ({ name, id }) => {
@@ -45,6 +47,10 @@ const BuildingContainer = ({ name, id }) => {
           rooms.map((room) => {
             return <RoomCard />;
           })}
+
+        <div className={styles.plusContainer}>
+          <Plus className={styles.plus} />
+        </div>
       </div>
     </article>
   );

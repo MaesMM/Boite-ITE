@@ -9,10 +9,15 @@ import { ReactComponent as Arrow } from "../../assets/icons/Arrow.svg";
 import { useState } from "react";
 import CategorySelector from "../../components/shared/CategorySelector/CategorySelector";
 import LineChart from "../../components/shared/Chart/LineChart";
+import Switch from "../../components/shared/Switch/Switch";
 
 const Room = () => {
-  const [box, setBox] = useState(null);
+  const [state, setState] = useState(false);
   const [category, setCategory] = useState("temperature");
+
+  const color = {
+    "--color": "#f9a546",
+  };
 
   const [chartData, setChartData] = useState({
     labels: ["9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00"],
@@ -31,7 +36,13 @@ const Room = () => {
 
   return (
     <main className="page">
-      <h2 className="pageTitle">Salle Rouge</h2>
+      <div className={`row ${styles.headRow}`}>
+        <div className={`row ${styles.topRow}`}>
+          <div className={styles.color} style={color}></div>
+          <h2 className="pageTitle">Salle Rouge</h2>
+        </div>
+        <Switch styling="bigSwitch" state={state} setState={setState} />
+      </div>
       <section className="section">
         <h2 className="sectionTitle">Informations</h2>
         <section className={styles.messages}>

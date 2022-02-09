@@ -7,7 +7,7 @@
   padding: 16px;
   box-sizing: border-box;
   border-radius: 16px;
-  width: clamp(320px, 100%, 960px);
+  width: clamp(240px, 100%, 960px);
   margin-bottom: 16px;
 }
 
@@ -38,8 +38,8 @@
 }
 
 .icon {
-  width: 32px;
-  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
 }
 
 .content {

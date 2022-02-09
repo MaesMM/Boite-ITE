@@ -12,7 +12,6 @@ const Device = () => {
     <main className="page">
       <div className="head">
         <h1 className="pageTitle">Boite 1</h1>
-        <Switch styling="bigSwitch" />
       </div>
       <section className="section">
         <h2 className="sectionTitle">Informations</h2>

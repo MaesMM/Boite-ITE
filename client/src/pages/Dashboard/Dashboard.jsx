@@ -50,6 +50,8 @@ const Dashboard = () => {
             title="Today's fact :"
             message={`You're pretty`}
           />
+
+          
         </section>
         <section className={styles.summary}>
           <article className="list">
@@ -82,6 +84,8 @@ const Dashboard = () => {
         <h2 className="sectionTitle">Vos batiments</h2>
         <div className="list">
           <BuildingContainer id={3} name="Adimaker" />
+          
+
         </div>
       </section>
     </main>
