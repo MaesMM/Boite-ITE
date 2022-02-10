@@ -31,7 +31,7 @@ const Rooms = () => {
       <section className="section">
         <div className={`row ${styles.title}`}>
           <h2 className="sectionTitle">Vos batiments</h2>
-          <Link to="/rooms/create">
+          <Link to="/buildings/create">
             <Plus className={styles.add} />
           </Link>
         </div>

@@ -84,8 +84,6 @@ const Dashboard = () => {
         <h2 className="sectionTitle">Vos batiments</h2>
         <div className="list">
           <BuildingContainer id={3} name="Adimaker" />
-          
-
         </div>
       </section>
     </main>

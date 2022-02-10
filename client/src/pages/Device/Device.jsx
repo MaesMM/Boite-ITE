@@ -2,11 +2,15 @@ import Selector from "../../components/shared/Selector/Selector";
 
 import styles from "./Device.module.scss";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Switch from "../../components/shared/Switch/Switch";
 
 const Device = () => {
   const [room, setRoom] = useState(null);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <main className="page">
@@ -17,8 +21,15 @@ const Device = () => {
         <h2 className="sectionTitle">Informations</h2>
         <div className="form-group">
           <label className="label">Nom</label>
-          <input type="text" className="input" placeholder="Nom de la pièce" />
+          <input
+            type="text"
+            className="input"
+            placeholder="Nom de l'appareil"
+          />
         </div>
+        <button type="submit" className="button">
+          Modifier
+        </button>
       </section>
 
       <section className="section">

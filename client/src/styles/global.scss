@@ -57,11 +57,13 @@ body {
 }
 
 .button {
-  padding: 12px 24px;
+  padding: 14px 24px;
   background-color: $accent-400;
   color: #fff;
   border: 0;
+  width: fit-content;
   font-weight: 700;
+  font-size: 1.1rem;
   border-radius: 16px;
   text-decoration: none;
   user-select: none;
@@ -80,12 +82,26 @@ body {
   background-color: $accent-400;
   color: #fff;
   border: 0;
+  width: fit-content;
   font-weight: 700;
   border-radius: 16px;
   font-size: 1.25rem;
   text-decoration: none;
   user-select: none;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.outlined-error {
+  background-color: transparent;
+  box-sizing: border-box;
+  color: $red-400;
+  padding: 11px 20px;
+  border: 3px solid $red-400;
+}
+.outlined-error:hover {
+  background-color: $red-400;
+  color: #fff;
   transition: all 0.2s ease;
 }
 
@@ -96,6 +112,19 @@ body {
 .errorButton:hover {
   background-color: $red-300;
   transition: all 0.2s ease;
+}
+
+.disabled {
+  background-color: transparent;
+  padding: 11px 20px;
+
+  color: rgba($color: #000, $alpha: 0.15);
+  border: 3px solid rgba($color: #000, $alpha: 0.15);
+
+  &:hover {
+    background-color: transparent;
+    border: 3px solid rgba($color: #000, $alpha: 0.15);
+  }
 }
 
 .section {
@@ -135,6 +164,22 @@ body {
   font-weight: 500;
 }
 
+.secondary-input {
+  min-height: 48px;
+  min-width: 240px;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  box-sizing: border-box;
+  font-weight: 500;
+  border: 3px solid rgba($color: #000, $alpha: 0.15);
+  padding: 2px 2px 2px 10px;
+  outline: 0;
+
+  &:focus {
+    border: 3px solid rgba($color: $accent-400, $alpha: 0.5);
+  }
+}
+
 .input,
 textarea {
   min-height: 48px;
@@ -159,6 +204,24 @@ textarea {
 .input:focus,
 textarea:focus {
   outline: 3px solid rgba($color: $accent-400, $alpha: 0.5);
+}
+
+.timeInput {
+  display: flex;
+  align-items: center;
+  width: 254px;
+  padding: 10px;
+  column-gap: 4px;
+  input {
+    height: 100%;
+    font-size: 1.1rem;
+    font-weight: 800;
+    width: 32px;
+    padding: 0;
+    border: 0;
+    text-align: right;
+    outline: none;
+  }
 }
 
 .colorPickerInput {
@@ -189,4 +252,8 @@ textarea:focus {
 
 .space-between {
   justify-content: space-between;
+}
+
+.full-width {
+  width: 100% !important;
 }

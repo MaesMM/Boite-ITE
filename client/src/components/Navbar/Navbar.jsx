@@ -48,14 +48,6 @@ const Navbar = () => {
             Journal
           </NavLink>
           <NavLink
-            to="/informations"
-            className={({ isActive }) =>
-              `${styles.link} ${isActive && styles.selected}`
-            }
-          >
-            Informations
-          </NavLink>
-          <NavLink
             to="/settings"
             className={({ isActive }) =>
               `${styles.link} ${isActive && styles.selected}`
