@@ -50,6 +50,8 @@ const Dashboard = () => {
             title="Today's fact :"
             message={`You're pretty`}
           />
+
+          
         </section>
         <section className={styles.summary}>
           <article className="list">

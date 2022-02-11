@@ -26,6 +26,7 @@ const RoomCard = ({ id }) => {
   const color = {
     "--color": data.color,
   };
+  
   const battery = {
     "--battery": data.battery + "%",
   };

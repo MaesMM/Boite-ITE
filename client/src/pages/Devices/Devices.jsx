@@ -1,7 +1,13 @@
+import { useEffect } from "react";
 import BoxCard from "../../components/shared/BoxCard/BoxCard";
 import InfoMessage from "../../components/shared/InfoMessage/InfoMessage";
 
 const Devices = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+
   return (
     <main className="page">
       <h1 className="pageTitle">Vos appareils</h1>

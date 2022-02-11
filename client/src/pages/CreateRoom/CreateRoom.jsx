@@ -15,9 +15,8 @@ const CreateRoom = () => {
   }, [color]);
 
   useEffect(() => {
-    console.log(selection);
-  }, [selection]);
-
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <main className="page">
       <h1 className="pageTitle">Créer une pièce</h1>

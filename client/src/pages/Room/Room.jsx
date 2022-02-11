@@ -6,13 +6,28 @@ import styles from "./Room.module.scss";
 
 import { ReactComponent as Arrow } from "../../assets/icons/Arrow.svg";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CategorySelector from "../../components/shared/CategorySelector/CategorySelector";
 import LineChart from "../../components/shared/Chart/LineChart";
+import Switch from "../../components/shared/Switch/Switch";
 
 const Room = () => {
-  const [box, setBox] = useState(null);
+  const [state, setState] = useState(false);
   const [category, setCategory] = useState("temperature");
+
+  const color = {
+    "--color": "#f9a546",
+  };
+
+  const onlyNumbers = (e) => {
+    e.target.value = e.target.value
+      .replace(/[^0-9.]/g, "")
+      .replace(/(\..*?)\..*/g, "$1");
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const [chartData, setChartData] = useState({
     labels: ["9:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00"],
@@ -31,7 +46,13 @@ const Room = () => {
 
   return (
     <main className="page">
-      <h2 className="pageTitle">Salle Rouge</h2>
+      <div className={`row ${styles.headRow}`}>
+        <div className={`row ${styles.topRow}`}>
+          <div className={styles.color} style={color}></div>
+          <h2 className="pageTitle">Salle Rouge</h2>
+        </div>
+        <Switch styling="bigSwitch" state={state} setState={setState} />
+      </div>
       <section className="section">
         <h2 className="sectionTitle">Informations</h2>
         <section className={styles.messages}>
@@ -57,16 +78,41 @@ const Room = () => {
           />
         </section>
       </section>
-      <section className={styles.dataSection}>
-        <h2 className="sectionTitle">Données :</h2>
-        <div className="list">
-          <DataCard type="plain" title="Relevés aujourd'hui" value="45" />
-          <DataCard
-            type="plain"
-            title="Heure du dernier relevé"
-            value="16:08"
+      <section></section>
+      <h2 className="sectionTitle">Relevés</h2>
+
+      <div className="form-group">
+        <label className="label">Interval de relevés</label>
+        <div className="input timeInput">
+          <input
+            type="text"
+            defaultValue="0"
+            onChange={(e) => onlyNumbers(e)}
+            maxLength={2}
           />
+          <span>h</span>
+          <input
+            type="text"
+            defaultValue="30"
+            maxLength={2}
+            onChange={(e) => onlyNumbers(e)}
+          />
+          <span>min</span>
+          <input
+            type="text"
+            defaultValue="0"
+            maxLength={2}
+            onChange={(e) => onlyNumbers(e)}
+          />
+          <span>sec</span>
         </div>
+      </div>
+      <div className="list">
+        <DataCard type="plain" title="Relevés aujourd'hui" value="45" />
+        <DataCard type="plain" title="Heure du dernier relevé" value="16:08" />
+      </div>
+      <section className={styles.dataSection}>
+        <h2 className="sectionTitle">Données</h2>
         <div className={styles.categorySelector}>
           <CategorySelector
             categories={[

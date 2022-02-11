@@ -4,10 +4,34 @@
   height: fit-content;
   padding: 32px 32px 0 32px;
   border-radius: 16px;
-
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
 }
 
 .name {
   margin: 0;
+}
+
+.plusContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 289px;
+  height: 289px;
+}
+
+.plus:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+.plus {
+  cursor: pointer;
+  padding: 16px;
+  background-color: #fff;
+  stroke: rgba(0, 0, 0, 0.1);
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
 }

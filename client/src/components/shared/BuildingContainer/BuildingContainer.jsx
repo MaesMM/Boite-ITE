@@ -1,7 +1,10 @@
 import RoomCard from "../RoomCard/RoomCard";
 import styles from "./BuildingContainer.module.scss";
 
+import { ReactComponent as Plus } from "../../../assets/icons/Plus.svg";
+
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const BuildingContainer = ({ name, id }) => {
   useEffect(() => {
@@ -45,6 +48,13 @@ const BuildingContainer = ({ name, id }) => {
           rooms.map((room) => {
             return <RoomCard />;
           })}
+
+        <Link
+          to={`/buildings/${id}/rooms/create`}
+          className={styles.plusContainer}
+        >
+          <Plus className={styles.plus} />
+        </Link>
       </div>
     </article>
   );

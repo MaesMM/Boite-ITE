@@ -70,3 +70,63 @@
     transform: translateX(0);
   }
 }
+
+.bigSwitch {
+  width: 70px;
+  height: 40px;
+
+  .thumb {
+    width: 32px;
+    height: 32px;
+    border-radius: 100px;
+    background-color: #fff;
+    box-shadow: 0 4px 40px rgba(0, 0, 0, 0.25);
+    transition: all 0.4s ease;
+  }
+
+  &.on {
+    background-color: $accent-400;
+    transition: all 0.4s ease;
+
+    .thumb {
+      animation: bigThumb 0.3s ease forwards;
+    }
+  }
+  &.off {
+    background-color: $grey-400;
+    transition: all 0.4s ease;
+
+    .thumb {
+      animation: bigBackThumb 0.3s ease forwards;
+    }
+  }
+}
+
+@keyframes bigThumb {
+  0% {
+    width: 32px;
+    transform: translateX(0);
+  }
+  50% {
+    width: 40px;
+    transform: translateX(16px);
+  }
+  100% {
+    width: 32px;
+    transform: translateX(30px);
+  }
+}
+@keyframes bigBackThumb {
+  0% {
+    width: 32px;
+    transform: translateX(30px);
+  }
+  50% {
+    width: 40px;
+    transform: translateX(16px);
+  }
+  100% {
+    width: 32px;
+    transform: translateX(0);
+  }
+}

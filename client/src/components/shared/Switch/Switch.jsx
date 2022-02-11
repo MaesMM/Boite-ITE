@@ -13,7 +13,7 @@ const Switch = ({ state, setState, callback, styling }) => {
       }}
       className={`${styles.switch} ${touched && !state && styles.off} ${
         state && styles.on
-      } ${styling && styling}`}
+      } ${styling && styles[styling]}`}
     >
       <div className={styles.thumb}></div>
     </div>
