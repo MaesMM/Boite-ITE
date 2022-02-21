@@ -9,6 +9,7 @@ mysqlclient = "*"
 mysql = "*"
 mariadb = "*"
 djangorestframework = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 
