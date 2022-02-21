@@ -7,39 +7,48 @@ import { ReactComponent as Thermometer } from "../../../assets/icons/Thermometer
 import { ReactComponent as Drop } from "../../../assets/icons/Drop.svg";
 import { ReactComponent as Sun } from "../../../assets/icons/Sun.svg";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import api from "../../../services/api";
 
-const RoomCard = ({ id }) => {
-  let data = {
-    id: 1,
-    name: "Salle Rouge",
-    color: "#FA9E9E",
-    temperature: "22°C",
-    humidity: "22%",
-    battery: 67,
-    luminosity: "Lumineux",
-  };
+const RoomCard = ({ uuid }) => {
+  // let data = {
+  //   id: 1,
+  //   name: "Salle Rouge",
+  //   color: "#FA9E9E",
+  //   temperature: "22°C",
+  //   humidity: "22%",
+  //   battery: 67,
+  //   luminosity: "Lumineux",
+  // };
 
   const [isSwitchedOn, setIsSwitchedOn] = useState(false);
-
-  const color = {
-    "--color": data.color,
-  };
-  
-  const battery = {
-    "--battery": data.battery + "%",
-  };
+  const [data, setData] = useState(null);
 
   const handleToggle = () => {
     // Do some api toggling here
   };
 
+  useEffect(() => {
+    api.get(`/rooms/${uuid}/`).then((res) => {
+      setData(res.data);
+      console.log(res.data.color);
+    });
+  }, [uuid]);
+
   return (
     <article className={styles.container}>
       <header className={styles.header}>
-        <Link to={"/rooms/" + data.id} className={styles.headerLeft}>
-          <div className={styles.color} style={color}></div>
+        <Link
+          to={uuid ? "/rooms/" + uuid + "/" : "/"}
+          className={styles.headerLeft}
+        >
+          <div
+            className={styles.color}
+            style={{
+              "--color": data ? data.color : "#000",
+            }}
+          ></div>
           <h2>{data && data.name}</h2>
         </Link>
         <div className={styles.headerRight}>
@@ -56,7 +65,7 @@ const RoomCard = ({ id }) => {
             <Thermometer className={styles.thermometer} />
           </div>
           <span className={styles.value}>
-            {data.temperature ? data.temperature : "--"}
+            {data && data.temperature ? data.temperature : "--"}
           </span>
         </li>
         <li className={styles.detail}>
@@ -64,7 +73,7 @@ const RoomCard = ({ id }) => {
             <Drop className={styles.drop} />
           </div>
           <span className={styles.value}>
-            {data.humidity ? data.humidity : "--"}
+            {data && data.humidity ? data.humidity : "--"}
           </span>
         </li>
         <li className={styles.detail}>
@@ -72,7 +81,7 @@ const RoomCard = ({ id }) => {
             <Sun className={styles.sun} />
           </div>
           <span className={styles.value}>
-            {data.luminosity ? data.luminosity : "--"}
+            {data && data.luminosity ? data.luminosity : "--"}
           </span>
         </li>
       </ul>
@@ -84,17 +93,24 @@ const RoomCard = ({ id }) => {
             <div className={styles.battery}>
               <div
                 className={`${styles.batteryIndicator} ${
-                  data.battery <= 25 && styles.low
-                } ${50 > data.battery && data.battery > 25 && styles.medium} ${
-                  data.battery >= 50 && styles.high
-                }`}
-                style={battery}
+                  data && data.battery <= 25 && styles.low
+                } ${
+                  data &&
+                  50 > data.battery &&
+                  data.battery > 25 &&
+                  styles.medium
+                } ${data && data.battery >= 50 && styles.high}`}
+                style={
+                  data && {
+                    "--battery": data.battery + "%",
+                  }
+                }
               ></div>
             </div>
           </div>
-          <span>{data.battery} %</span>
+          <span>{data && data.battery} %</span>
         </div>
-        <Link to={"/rooms/" + data.id} className={styles.link}>
+        <Link to={uuid ? "/rooms/" + uuid + "/" : "/"} className={styles.link}>
           Voir la pièce
         </Link>
       </footer>

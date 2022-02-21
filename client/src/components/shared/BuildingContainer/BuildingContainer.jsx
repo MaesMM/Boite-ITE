@@ -5,38 +5,15 @@ import { ReactComponent as Plus } from "../../../assets/icons/Plus.svg";
 
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import api from "../../../services/api";
 
-const BuildingContainer = ({ name, id }) => {
+const BuildingContainer = ({ name, uuid }) => {
+  const [rooms, setRooms] = useState(null);
+
   useEffect(() => {
-    // Fetch some data here
-
-    let data = [
-      {
-        name: "Salle rouge",
-        color: "#000",
-        state: true,
-      },
-      {
-        name: "Salle rouge",
-        color: "#000",
-        state: true,
-      },
-      {
-        name: "Salle rouge",
-        color: "#000",
-        state: true,
-      },
-      {
-        name: "Salle rouge",
-        color: "#000",
-        state: true,
-      },
-    ];
-
-    setRooms(data);
-  }, []);
-
-  const [rooms, setRooms] = useState([]);
+    uuid &&
+      api.get(`/buildings/${uuid}/`).then((res) => setRooms(res.data.rooms));
+  }, [uuid]);
 
   return (
     <article className={styles.container}>
@@ -46,11 +23,11 @@ const BuildingContainer = ({ name, id }) => {
       <div className="list">
         {rooms &&
           rooms.map((room) => {
-            return <RoomCard />;
+            return <RoomCard key={room.uuid} uuid={room.uuid} />;
           })}
 
         <Link
-          to={`/buildings/${id}/rooms/create`}
+          to={`/buildings/${uuid}/rooms/create`}
           className={styles.plusContainer}
         >
           <Plus className={styles.plus} />

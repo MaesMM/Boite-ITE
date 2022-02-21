@@ -3,14 +3,21 @@ import DataCard from "../../components/shared/DataCard/DataCard";
 import BoxCard from "../../components/shared/BoxCard/BoxCard";
 
 import styles from "./Dashboard.module.scss";
-import RoomCard from "../../components/shared/RoomCard/RoomCard";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import BuildingContainer from "../../components/shared/BuildingContainer/BuildingContainer";
+import api from "../../services/api";
 
 const Dashboard = () => {
+  const [buildings, setBuildings] = useState(null);
+
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    api.get("/buildings/").then((res) => {
+      console.log(res.data);
+      setBuildings(res.data);
+    });
   }, []);
   return (
     <main className="page">
@@ -22,7 +29,7 @@ const Dashboard = () => {
           title="Nouveaux appareils en attente"
           message="Une ou plusieurs boites se sont connectées à votre serveur et sont en attente d'être configurées"
         />
-        <div class="list">
+        <div className="list">
           <BoxCard type="configuration" macAddress="4R:7V:4D:8C:3J" />
         </div>
       </section>
@@ -50,8 +57,6 @@ const Dashboard = () => {
             title="Today's fact :"
             message={`You're pretty`}
           />
-
-          
         </section>
         <section className={styles.summary}>
           <article className="list">
@@ -83,7 +88,22 @@ const Dashboard = () => {
       <section className="section">
         <h2 className="sectionTitle">Vos batiments</h2>
         <div className="list">
-          <BuildingContainer id={3} name="Adimaker" />
+          {buildings ? (
+            buildings.map((building) => {
+              return (
+                <BuildingContainer
+                  key={building.uuid}
+                  uuid={building.uuid}
+                  name={building.name}
+                />
+              );
+            })
+          ) : (
+            <InfoMessage
+              type="info"
+              message="Vous n'avez créé aucune pièce, ajoutez-en une !"
+            />
+          )}
         </div>
       </section>
     </main>

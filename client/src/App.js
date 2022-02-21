@@ -23,15 +23,15 @@ function App() {
           <Route exact path="/" element={<Dashboard />} />
           <Route exact path="/devices" element={<Devices />} />
           <Route exact path="/devices/create" element={<CreateBox />} />
-          <Route exact path="/devices/:id" element={<Device />} />
+          <Route exact path="/devices/:uuid" element={<Device />} />
           <Route exact path="/buildings/create" element={<CreateBuilding />} />
           <Route exact path="/rooms" element={<Rooms />} />
           <Route
             exact
-            path="/buildings/:id/rooms/create"
+            path="/buildings/:uuid/rooms/create"
             element={<CreateRoom />}
           />
-          <Route exact path="/rooms/:id" element={<Room />} />
+          <Route exact path="/rooms/:uuid" element={<Room />} />
           <Route exact path="/informations" element={<Informations />} />
           <Route exact path="/settings" element={<Settings />} />
         </Routes>

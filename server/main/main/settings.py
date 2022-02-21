@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-uv@$1+kh*y4nj4n&x@%2w_ucp3&cse@w^(79)t)-0oji$2nd)+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -37,8 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+    "corsheaders",
     'rest_framework',
+    'rest_framework.authtoken',
     'api.apps.ApiConfig',
 ]
 
@@ -50,7 +51,17 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
+
+# CORS_ORIGIN_WHITELIST = [
+#     "http://localhost:3000",
+# ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 ROOT_URLCONF = 'main.urls'
 
@@ -82,8 +93,8 @@ DATABASES = {
         'NAME': 'dbite',
         'HOST': '127.0.0.1',
         'PORT': '3306',
-        'USER': 'myroot',
-        'PASSWORD': '12345',
+        'USER': 'root',
+        'PASSWORD': 'root',
     }
 }
 

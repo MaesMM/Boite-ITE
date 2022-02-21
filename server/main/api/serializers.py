@@ -12,7 +12,8 @@ class RoomSerializer(serializers.HyperlinkedModelSerializer):
         # depth = 1
 
     def create(self, validated_data):
-        subject = Room.objects.create(building=validated_data['building']['uuid'], name=validated_data['name'], color=validated_data['color'], collect_frequency=validated_data['collect_frequency'])
+        subject = Room.objects.create(building=validated_data['building']['uuid'], name=validated_data['name'], color=validated_data['color'])
+
         return subject
 
 class BuildingSerializer(serializers.HyperlinkedModelSerializer):
