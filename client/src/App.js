@@ -18,11 +18,14 @@ function App() {
     <div className="App">
       <Router>
         <Navbar />
-        {/* <Header /> */}
         <Routes>
           <Route exact path="/" element={<Dashboard />} />
           <Route exact path="/devices" element={<Devices />} />
-          <Route exact path="/devices/create" element={<CreateBox />} />
+          <Route
+            exact
+            path="/devices/:uuid/configure"
+            element={<CreateBox />}
+          />
           <Route exact path="/devices/:uuid" element={<Device />} />
           <Route exact path="/buildings/create" element={<CreateBuilding />} />
           <Route exact path="/rooms" element={<Rooms />} />

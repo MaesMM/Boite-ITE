@@ -12,7 +12,7 @@ const BuildingContainer = ({ name, uuid }) => {
 
   useEffect(() => {
     uuid &&
-      api.get(`/buildings/${uuid}/`).then((res) => setRooms(res.data.rooms));
+      api.get(`/building/${uuid}/`).then((res) => setRooms(res.data.rooms));
   }, [uuid]);
 
   return (

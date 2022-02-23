@@ -5,7 +5,7 @@ import InfoMessage from "../../components/shared/InfoMessage/InfoMessage";
 import BoxSelector from "../../components/shared/Selector/Selector";
 
 import { useForm } from "react-hook-form";
-import axios from "axios";
+
 import api from "../../services/api";
 import { useParams } from "react-router-dom";
 
@@ -19,13 +19,21 @@ const CreateRoom = () => {
 
   const [colorValue, setColorValue] = useState(null);
 
+  const [boxes, setBoxes] = useState([]);
+  const [newBoxes, setNewBoxes] = useState([]);
+
   useEffect(() => {
     setColorValue({ "--color": color });
   }, [color]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    console.log(uuid);
+    api.get(`/boxes/not-assigned/`).then((res) => {
+      setBoxes(res.data);
+    });
+    api.get(`/boxes/new/`).then((res) => {
+      setNewBoxes(res.data);
+    });
   }, []);
 
   const onSubmit = (formData) => {
@@ -57,6 +65,7 @@ const CreateRoom = () => {
                 {...register("color")}
                 type="color"
                 id="color"
+                value="#33c9cc"
                 onChange={(e) => {
                   setValue("color", e.target.value);
                   setColor(e.target.value);
@@ -68,34 +77,31 @@ const CreateRoom = () => {
         </section>
         <section className="section">
           <h2 className="sectionTitle">Ajouter des appareils à la pièce</h2>
-          <InfoMessage
-            type="warning"
-            message="Certains appareils sont en attente d'être configurés, configurez les
+          {boxes.length && (
+            <>
+              {newBoxes.length > 0 && (
+                <InfoMessage
+                  type="warning"
+                  message="Certains appareils sont en attente d'être configurés, configurez les
           avant de pouvoir les assigner à une pièce"
-          />
-          <div className={styles.list}>
-            <BoxSelector
-              type="radio"
-              id={1}
-              name="Boite 1"
-              selection={selection}
-              setSelection={setSelection}
-            />
-            <BoxSelector
-              type="radio"
-              id={2}
-              name="Boite 2"
-              selection={selection}
-              setSelection={setSelection}
-            />
-            <BoxSelector
-              type="radio"
-              id={3}
-              name="Boite 3"
-              selection={selection}
-              setSelection={setSelection}
-            />
-          </div>
+                />
+              )}
+              <div className={styles.list}>
+                {boxes.map((box) => {
+                  return (
+                    <BoxSelector
+                      key={box.uuid}
+                      type="radio"
+                      id={box.uuid}
+                      name={box.name}
+                      selection={selection}
+                      setSelection={setSelection}
+                    />
+                  );
+                })}
+              </div>
+            </>
+          )}
         </section>
         <section className="section">
           <button type="submit" className="bigButton">

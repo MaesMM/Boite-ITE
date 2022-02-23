@@ -2,17 +2,17 @@ import styles from "./BoxCard.module.scss";
 import { ReactComponent as Box } from "../../../assets/icons/Box.svg";
 import { Link } from "react-router-dom";
 
-const BoxCard = ({ type, id, box, setBox, link, name, macAddress }) => {
+const BoxCard = ({ type, uuid, box, setBox, link, name, macAddress }) => {
   return (
     <article
       className={styles.container}
-      onClick={() => type === "selection" && setBox(id)}
+      onClick={() => type === "selection" && setBox(uuid)}
     >
       <Box className={styles.icon} />
       {type === "configuration" && (
         <>
           <span className={styles.text}>{macAddress}</span>
-          <Link to="/devices/create" className="button">
+          <Link to={`/devices/${uuid}/configure`} className="button">
             Configurer
           </Link>
         </>
@@ -21,8 +21,8 @@ const BoxCard = ({ type, id, box, setBox, link, name, macAddress }) => {
       {type === "selection" && (
         <>
           <span className={styles.text}>{name}</span>
-          <div className={`button ${box === id && styles.selected}`}>
-            {box === id ? "Sélectionnée" : "Sélectionner"}
+          <div className={`button ${box === uuid && styles.selected}`}>
+            {box === uuid ? "Sélectionnée" : "Sélectionner"}
           </div>
         </>
       )}

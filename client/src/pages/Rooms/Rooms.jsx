@@ -12,30 +12,44 @@ import api from "../../services/api";
 
 const Rooms = () => {
   const [buildings, setBuildings] = useState(null);
+  const [newBoxes, setNewBoxes] = useState([]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
 
     api.get("/buildings/").then((res) => {
-      console.log(res.data);
       setBuildings(res.data);
+    });
+
+    api.get("/boxes/new/").then((res) => {
+      setNewBoxes(res.data);
     });
   }, []);
 
   return (
     <main className="page">
       <h1 className="pageTitle">Vos pièces</h1>
-      <section className="section">
-        <h2 className="sectionTitle">Nouvelles connexions</h2>
-        <InfoMessage
-          type="success"
-          title="Nouveaux appareils en attente"
-          message="Une ou plusieurs boites se sont connectées à votre serveur et sont en attente d'être configurées"
-        />
-        <div className="list">
-          <BoxCard type="configuration" macAddress="4R:7V:4D:8C:3J" />
-        </div>
-      </section>
+      {newBoxes.length !== 0 && (
+        <section className="section">
+          <h2 className="sectionTitle">Nouvelles connexions</h2>
+          <InfoMessage
+            type="success"
+            title="Nouveaux appareils en attente"
+            message="Une ou plusieurs boites se sont connectées à votre serveur et sont en attente d'être configurées"
+          />
+          <div className="list">
+            {newBoxes.map((box) => {
+              return (
+                <BoxCard
+                  key={box.uuid}
+                  type="configuration"
+                  macAddress={box.mac}
+                />
+              );
+            })}
+          </div>
+        </section>
+      )}
       <section className="section">
         <div className={`row ${styles.title}`}>
           <h2 className="sectionTitle">Vos batiments</h2>

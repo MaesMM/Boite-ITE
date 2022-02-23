@@ -24,6 +24,8 @@ const Selector = ({ id, type, name, selection, setSelection }) => {
   const handleSelect = () => {
     if (selection !== id) {
       setSelection(id);
+    } else {
+      setSelection(null);
     }
   };
 

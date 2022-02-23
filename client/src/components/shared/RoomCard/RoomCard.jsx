@@ -12,16 +12,6 @@ import { Link } from "react-router-dom";
 import api from "../../../services/api";
 
 const RoomCard = ({ uuid }) => {
-  // let data = {
-  //   id: 1,
-  //   name: "Salle Rouge",
-  //   color: "#FA9E9E",
-  //   temperature: "22°C",
-  //   humidity: "22%",
-  //   battery: 67,
-  //   luminosity: "Lumineux",
-  // };
-
   const [isSwitchedOn, setIsSwitchedOn] = useState(false);
   const [data, setData] = useState(null);
 
@@ -30,9 +20,8 @@ const RoomCard = ({ uuid }) => {
   };
 
   useEffect(() => {
-    api.get(`/rooms/${uuid}/`).then((res) => {
+    api.get(`/room/${uuid}/`).then((res) => {
       setData(res.data);
-      console.log(res.data.color);
     });
   }, [uuid]);
 
@@ -108,7 +97,7 @@ const RoomCard = ({ uuid }) => {
               ></div>
             </div>
           </div>
-          <span>{data && data.battery} %</span>
+          <span>{data && data.battery ? data.battery : "--"} %</span>
         </div>
         <Link to={uuid ? "/rooms/" + uuid + "/" : "/"} className={styles.link}>
           Voir la pièce
