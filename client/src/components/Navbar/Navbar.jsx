@@ -39,7 +39,7 @@ const Navbar = () => {
           >
             Vos appareils
           </NavLink>
-          <NavLink
+          {/* <NavLink
             to="/journal"
             className={({ isActive }) =>
               `${styles.link} ${isActive && styles.selected}`
@@ -54,7 +54,7 @@ const Navbar = () => {
             }
           >
             Paramètres
-          </NavLink>
+          </NavLink> */}
         </nav>
       </div>
     </aside>

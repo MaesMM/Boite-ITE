@@ -1,56 +1,90 @@
 import Selector from "../../components/shared/Selector/Selector";
 
 import styles from "./Device.module.scss";
+import { useForm } from "react-hook-form";
 
 import { useEffect, useState } from "react";
-import Switch from "../../components/shared/Switch/Switch";
+import { useParams } from "react-router-dom";
+import api from "../../services/api";
 
 const Device = () => {
   const [room, setRoom] = useState(null);
+  const [rooms, setRooms] = useState([]);
+  const { uuid } = useParams();
+
+  const [data, setData] = useState(null);
+
+  const { register, handleSubmit } = useForm();
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    api
+      .get(`/box/${uuid}/`)
+      .then((res) => res.status === 200 && setData(res.data));
+    api.get(`/rooms/`).then((res) => {
+      res.status === 200 && setRooms(res.data);
+      return res;
+    });
+  }, [uuid]);
+
+  const handleAssignement = () => {
+    api.post(`/box/assign/${uuid}/`, { room: room });
+  };
+  const handleUpdate = (formData) => {
+    api.patch(`/box/update/${uuid}/`, formData);
+  };
+
+  useEffect(() => {
+    data && setRoom(data.room);
+  }, [data]);
 
   return (
     <main className="page">
       <div className="head">
-        <h1 className="pageTitle">Boite 1</h1>
+        <h1 className="pageTitle">{data && data.name}</h1>
       </div>
       <section className="section">
-        <h2 className="sectionTitle">Informations</h2>
-        <div className="form-group">
-          <label className="label">Nom</label>
-          <input
-            type="text"
-            className="input"
-            placeholder="Nom de l'appareil"
-          />
-        </div>
-        <button type="submit" className="button">
-          Modifier
-        </button>
+        <form onSubmit={handleSubmit(handleUpdate)}>
+          <h2 className="sectionTitle">Informations</h2>
+          <div className="form-group">
+            <label className="label">Nom</label>
+            <input
+              defaultValue={data && data.name}
+              {...register("name")}
+              type="text"
+              className="input"
+              placeholder="Nom de l'appareil"
+            />
+          </div>
+          <button type="submit" className="button">
+            Modifier
+          </button>
+        </form>
       </section>
 
-      <section className="section">
-        <h2 className="sectionTitle">Pièce</h2>
-        <div className={styles.list}>
-          <Selector
-            type="radio"
-            name="test 1"
-            id={1}
-            selection={room}
-            setSelection={setRoom}
-          />
-          <Selector
-            type="radio"
-            name="test 2"
-            id={2}
-            selection={room}
-            setSelection={setRoom}
-          />
-        </div>
-      </section>
+      {rooms.length > 0 && (
+        <section className="section">
+          <h2 className="sectionTitle">Pièce</h2>
+          <div className={`form-group ${styles.list}`}>
+            {rooms.map((instance) => {
+              return (
+                <Selector
+                  type="radio"
+                  key={instance.uuid}
+                  name={instance.name}
+                  id={instance.uuid}
+                  building={instance.building}
+                  selection={room}
+                  setSelection={setRoom}
+                />
+              );
+            })}
+          </div>
+          <button type="submit" onClick={handleAssignement} className="button">
+            Assigner
+          </button>
+        </section>
+      )}
       <section className="section">
         <h2 className="sectionTitle">Actions sur votre appareil</h2>
         <div className="row">

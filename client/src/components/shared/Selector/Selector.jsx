@@ -1,8 +1,12 @@
 import styles from "./Selector.module.scss";
 
 import { ReactComponent as Success } from "../../../assets/icons/Success.svg";
+import { useEffect, useState } from "react";
+import api from "../../../services/api";
 
-const Selector = ({ id, type, name, selection, setSelection }) => {
+const Selector = ({ id, building, type, name, selection, setSelection }) => {
+  const [buildingName, setBuildingName] = useState(null);
+
   const handleCheck = () => {
     if (selection.includes(id)) {
       let newArray = [];
@@ -29,6 +33,13 @@ const Selector = ({ id, type, name, selection, setSelection }) => {
     }
   };
 
+  useEffect(() => {
+    building &&
+      api
+        .get(`/building/${building}/`)
+        .then((res) => setBuildingName(res.data.name));
+  }, [building]);
+
   return (
     <article
       className={styles.container}
@@ -49,7 +60,10 @@ const Selector = ({ id, type, name, selection, setSelection }) => {
         {type === "checkbox" && <Success className={styles.icon} />}
         {type === "radio" && <div className={styles.point}></div>}
       </div>
-      <div className={styles.name}>{name}</div>
+      <div className={styles.column}>
+        <div className={styles.name}>{name}</div>
+        {buildingName && <div className={styles.subname}>{buildingName}</div>}
+      </div>
     </article>
   );
 };

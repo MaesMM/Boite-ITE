@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import styles from "./CategorySelector.module.scss";
 
 const CategorySelector = ({ categories, selected, setSelected }) => {
@@ -7,12 +8,15 @@ const CategorySelector = ({ categories, selected, setSelected }) => {
         categories.map((category) => {
           return (
             <div
+              key={category.id}
               className={`${styles.category} ${
-                selected === category[0] && styles.selected
+                selected === category && styles.selected
               }`}
-              onClick={() => setSelected(category[0])}
+              onClick={() => {
+                setSelected(category);
+              }}
             >
-              {category[1]}
+              {category.display_name}
             </div>
           );
         })}

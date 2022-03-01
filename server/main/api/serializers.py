@@ -19,7 +19,7 @@ class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = ['uuid', 'building',
-                  'name', 'color', "boxes", 'collect_frequency']
+                  'name', 'color', "boxes", "state", 'collect_frequency']
         # depth = 1
 
     def create(self, validated_data):
@@ -35,3 +35,17 @@ class BuildingSerializer(serializers.ModelSerializer):
     class Meta:
         model = Building
         fields = ['uuid', 'name', 'rooms']
+
+
+class DataTypeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = DataType
+        fields = "__all__"
+
+
+class DataSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Data
+        fields = "__all__"

@@ -11,7 +11,7 @@ import BuildingContainer from "../../components/shared/BuildingContainer/Buildin
 import api from "../../services/api";
 
 const Rooms = () => {
-  const [buildings, setBuildings] = useState(null);
+  const [buildings, setBuildings] = useState([]);
   const [newBoxes, setNewBoxes] = useState([]);
 
   useEffect(() => {
@@ -58,7 +58,7 @@ const Rooms = () => {
           </Link>
         </div>
         <div className="list">
-          {buildings ? (
+          {buildings.length > 0 ? (
             buildings.map((building) => {
               return (
                 <BuildingContainer
@@ -71,7 +71,7 @@ const Rooms = () => {
           ) : (
             <InfoMessage
               type="info"
-              message="Vous n'avez créé aucune pièce, ajoutez-en une !"
+              message="Vous n'avez créé aucun batiment"
             />
           )}
         </div>

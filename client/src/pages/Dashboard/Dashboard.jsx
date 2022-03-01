@@ -4,12 +4,15 @@ import BoxCard from "../../components/shared/BoxCard/BoxCard";
 
 import styles from "./Dashboard.module.scss";
 
+import { ReactComponent as Plus } from "../../assets/icons/Plus.svg";
+
 import { useEffect, useState } from "react";
 import BuildingContainer from "../../components/shared/BuildingContainer/BuildingContainer";
 import api from "../../services/api";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
-  const [buildings, setBuildings] = useState(null);
+  const [buildings, setBuildings] = useState([]);
   const [newBoxes, setNewBoxes] = useState([]);
 
   useEffect(() => {
@@ -77,32 +80,18 @@ const Dashboard = () => {
             <DataCard type="plain" title="Relevés aujourd'hui" value="45" />
             <DataCard type="alerts" title="Alertes" value="69" />
           </article>
-          <article className="list">
-            <DataCard
-              type="minTemp"
-              title="Température minimale"
-              value="15°C"
-            />
-            <DataCard
-              type="temperature"
-              title="Température moyenne"
-              value="22°C"
-            />
-            <DataCard
-              type="maxTemp"
-              title="Température maximale"
-              value="35°C"
-            />
-            <DataCard type="humidity" title="Humidité moyenne" value="35%" />
-            <DataCard type="average" title="Donnée actuelle" value="35" />
-          </article>
         </section>
       </section>
 
       <section className="section">
-        <h2 className="sectionTitle">Vos batiments</h2>
+        <div className={`row ${styles.title}`}>
+          <h2 className="sectionTitle">Vos batiments</h2>
+          <Link to="/buildings/create">
+            <Plus className={styles.add} />
+          </Link>
+        </div>
         <div className="list">
-          {buildings ? (
+          {buildings.length > 0 ? (
             buildings.map((building) => {
               return (
                 <BuildingContainer
@@ -115,7 +104,7 @@ const Dashboard = () => {
           ) : (
             <InfoMessage
               type="info"
-              message="Vous n'avez créé aucune pièce, ajoutez-en une !"
+              message="Vous n'avez créé aucun batiment"
             />
           )}
         </div>

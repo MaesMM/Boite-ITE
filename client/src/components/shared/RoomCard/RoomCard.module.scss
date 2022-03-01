@@ -11,6 +11,12 @@
   background-color: #fff;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
   border-radius: 16px;
+  transition: all 0.2s ease;
+}
+
+.container:hover {
+  transform: scale(1.025);
+  transition: all 0.2s ease;
 }
 
 .header {
@@ -80,7 +86,7 @@
 .batteryIndicator {
   width: var(--battery);
   height: 100%;
-  border-radius: 3px;
+  border-radius: 2px;
 }
 
 .high {

@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.utils import timezone
 from uuid import uuid4
 from django.db import models
 
@@ -32,7 +33,7 @@ class Room(models.Model):
     building = models.ForeignKey(
         Building, related_name='rooms', on_delete=models.CASCADE)
     name = models.CharField(max_length=32, unique=True)
-
+    state = models.BooleanField(default=True)
     color = models.CharField(max_length=16)
     collect_frequency = models.IntegerField(default=300)
 
@@ -67,11 +68,11 @@ class DataType(models.Model):
 
 class Data(models.Model):
     data_type = models.ForeignKey(DataType, on_delete=models.CASCADE)
-    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    box = models.ForeignKey(Box, null=True, on_delete=models.CASCADE)
 
     value = models.CharField(max_length=32)
     isError = models.BooleanField(default=False)
-    timeStamp = models.DateField(default=datetime.now)
+    created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return "%s - %s %s" % (self.data_type.display_name, self.value, self.data_type.unit)

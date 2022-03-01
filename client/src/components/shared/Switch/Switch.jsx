@@ -1,10 +1,13 @@
 import styles from "./Switch.module.scss";
 
-import { useState } from "react";
-
-const Switch = ({ state, setState, callback, styling }) => {
-  const [touched, setTouched] = useState(false);
-
+const Switch = ({
+  state,
+  setState,
+  touched,
+  setTouched,
+  callback,
+  styling,
+}) => {
   return (
     <div
       onClick={() => {

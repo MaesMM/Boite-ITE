@@ -31,6 +31,22 @@ def newBoxList(request):
 
 
 @api_view(["GET"])
+def boxAssignedList(request):
+    boxes = Box.objects.filter(name__isnull=False, room__isnull=False)
+    serializer = BoxSerializer(boxes, many=True)
+
+    return Response(serializer.data)
+
+
+@api_view(["GET"])
+def notAssignedBoxList(request):
+    boxes = Box.objects.filter(name__isnull=False, room_id__isnull=True)
+    serializer = BoxSerializer(boxes, many=True)
+
+    return Response(serializer.data)
+
+
+@api_view(["GET"])
 def boxDetail(request, uuid):
     boxes = Box.objects.get(uuid=uuid)
     serializer = BoxSerializer(boxes, many=False)
@@ -62,7 +78,28 @@ def boxUpdate(request, uuid):
     return Response(serializer.errors)
 
 
+@api_view(["POST"])
+def boxAssign(request, uuid):
+
+    data = request.data
+
+    box = Box.objects.get(uuid=uuid)
+
+    if (data["room"]):
+        room = Room.objects.get(uuid=data["room"])
+        box.room_id = room.uuid
+
+    serializer = BoxSerializer(instance=box, data=request.data, partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+
+    return Response(serializer.errors)
+
+
 #! --- BUILDINGS ---
+
 
 @api_view(["GET"])
 def buildingList(request):
@@ -147,7 +184,7 @@ def roomCreate(request):
 @api_view(["PATCH"])
 def roomUpdate(request, uuid):
 
-    room = room.objects.get(uuid=uuid)
+    room = Room.objects.get(uuid=uuid)
 
     serializer = RoomSerializer(
         instance=room, data=request.data, partial=True)
@@ -159,73 +196,136 @@ def roomUpdate(request, uuid):
     return Response(serializer.errors)
 
 
-# class ConfigureBoxView(GenericAPIView, UpdateModelMixin):
-#     '''
-#     Book update API, need to submit both `name` and `author_name` fields
-#     At the same time, or django will prevent to do update for field missing
-#     '''
-#     queryset = Box.objects.all()
-#     serializer_class = BoxSerializer
-
-#     def put(self, request, *args, **kwargs):
-
-#         data = request.data
-#         box = self.get_queryset().filter(uuid=data["uuid"])
-#         return box.partial_update(data)
+#! -- DATA TYPES --
 
 
-# class BuildingViewSet(viewsets.ModelViewSet):
-#     queryset = Building.objects.all().order_by('name')
-#     serializer_class = BuildingSerializer
+@api_view(["POST"])
+def dataTypeCreate(request):
+
+    serializer = DataTypeSerializer(
+        data=request.data)
+
+    if serializer.is_valid():
+        serializer.save()
+
+    return Response(serializer.data)
 
 
-# class RoomsViewSet(viewsets.ModelViewSet):
-#     queryset = Room.objects.all().order_by('building')
-#     serializer_class = RoomSerializer
+@api_view(["GET"])
+def dataTypeAll(request):
+
+    dataTypes = DataType.objects.all()
+
+    serializer = DataTypeSerializer(
+        dataTypes, many=True)
+    return Response(serializer.data)
 
 
-# class BoxViewSet(viewsets.ModelViewSet):
-#     serializer_class = BoxSerializer
-#     queryset = Box.objects.all().order_by("name")
+@api_view(["GET"])
+def dataTypeDetails(request, name):
 
-#     @action(
-#         methods=["get"],
-#         detail=False,
-#         url_path="new",
-#         url_name="new"
-#     )
-#     def get_new_boxes(self, request, *args, **kwargs):
-#         queryset = self.get_queryset().filter(name__isnull=True, room__isnull=True)
-#         queryset = self.filter_queryset(queryset)
-#         serializer = BoxSerializer(
-#             queryset, many=True, context=self.get_serializer_context())
-#         return Response(serializer.data)
+    dataType = DataType.objects.get(name=name)
 
-#     @action(
-#         methods=["get"],
-#         detail=False,
-#         url_path="not-assigned",
-#         url_name="not-assigned",
+    serializer = DataTypeSerializer(
+        dataType, many=False)
+    return Response(serializer.data)
 
-#     )
-#     def get_not_assigned_boxes(self, request, *args, **kwargs):
-#         queryset = self.get_queryset().filter(
-#             room__isnull=True, name__isnull=False)
-#         queryset = self.filter_queryset(queryset)
-#         serializer = BoxSerializer(
-#             queryset, many=True, context=self.get_serializer_context())
-#         return Response(serializer.data)
 
-#     @action(
-#         methods=["put"],
-#         detail=False,
-#         url_path="configure",
-#         url_name="configure",
+@api_view(["PATCH"])
+def dataTypeUpdate(request, name):
+    dataType = DataType.objects.get(name=name)
 
-#     )
-#     def configure_box(self, request, *args, **kwargs):
-#         data = request.data
-#         box = self.get_queryset().filter(uuid=data["uuid"])
-#         print(box)
-#         # box.mac = data["name"]
-#         # box.save()
+    serializer = DataTypeSerializer(
+        instance=dataType, data=request.data, partial=True)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+
+    return Response(serializer.errors)
+
+
+@api_view(["DELETE"])
+def dataTypeDelete(request, name):
+    dataType = DataType.objects.get(name=name)
+    dataType.delete()
+    return Response(request.data)
+
+
+#! -- DATA --
+
+
+@api_view(["POST"])
+def dataCreate(request):
+
+    data = request.data
+
+    box = Box.objects.get(mac=data["mac"])
+
+    for sample in data["sensors_data"].items():
+        sampleType = sample[0]
+        sampleValue = sample[1]
+
+        dataType = DataType.objects.get(name=sampleType)
+
+        if dataType:
+
+            dataToPass = {"box": box.uuid, "data_type": dataType.id,
+                          "value": sampleValue, "isError": False}
+
+            serializer = DataSerializer(
+                data=dataToPass)
+
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                print(serializer.errors)
+
+        # value, isError, data_type_id, box_id
+
+    # dataType = DataType.objects.get(name=data["name"])
+
+    # serializer = DataTypeSerializer(
+    #     instance=dataType, data=request.data, partial=True)
+
+    # if serializer.is_valid():
+    #     serializer.save()
+    #     return Response(serializer.data)
+
+    # return Response(serializer.errors)
+    return Response(data)
+
+
+@api_view(["GET"])
+def dataGetToday(request, box_uuid):
+
+    today = datetime.today().date()
+
+    data = Data.objects.filter(
+        box=box_uuid, created_at__contains=today)
+    serializer = DataSerializer(
+        data, many=True)
+    return Response(serializer.data)
+
+
+@api_view(["GET"])
+def dataGetLatest(request, box_uuid):
+
+    today = datetime.today().date()
+
+    dataTypes = DataType.objects.all()
+
+    dataToPass = []
+
+    for dataType in dataTypes:
+        print(dataType.id)
+
+        if Data.objects.filter(
+                box=box_uuid, created_at__contains=today, data_type=dataType.id).exists():
+            data = Data.objects.filter(
+                box=box_uuid, created_at__contains=today, data_type=dataType.id).latest('created_at')
+            dataToPass.append(data)
+
+    serializer = DataSerializer(
+        dataToPass, many=True)
+    return Response(serializer.data)

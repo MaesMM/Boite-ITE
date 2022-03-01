@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 import api from "../../services/api";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 const CreateBuilding = () => {
   const { register, handleSubmit } = useForm();
+  let navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -11,7 +13,9 @@ const CreateBuilding = () => {
 
   const onSubmit = (formData) => {
     console.log(formData);
-    api.post("/buildings/", formData).then((res) => console.log(res));
+    api
+      .post("/building/create/", formData)
+      .then((res) => res.status === 200 && navigate("/rooms"));
   };
 
   return (

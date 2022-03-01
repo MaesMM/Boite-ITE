@@ -30,8 +30,8 @@ const LineChart = ({ chartData, min, max }) => {
 
             y: {
               beginAtZero: true,
-              // min,
-              // max,
+              min,
+              max,
             },
           },
         }}

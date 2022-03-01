@@ -51,3 +51,14 @@
   border-radius: 100px;
   background-color: #fff;
 }
+
+.column {
+  display: flex;
+  flex-direction: column;
+  row-gap: 4px;
+}
+
+.subname {
+  color: rgba(0, 0, 0, 0.3);
+  font-weight: 500;
+}

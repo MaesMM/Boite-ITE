@@ -5,10 +5,12 @@ import api from "../../services/api";
 
 const Devices = () => {
   const [newBoxes, setNewBoxes] = useState([]);
+  const [pendingBoxes, setPendingBoxes] = useState([]);
   const [boxes, setBoxes] = useState([]);
 
   useEffect(() => {
-    api.get("/boxes/").then((res) => setBoxes(res.data));
+    api.get("/boxes/assigned/").then((res) => setBoxes(res.data));
+    api.get("/boxes/not-assigned/").then((res) => setPendingBoxes(res.data));
     api.get("/boxes/new/").then((res) => setNewBoxes(res.data));
   }, []);
 
@@ -25,19 +27,27 @@ const Devices = () => {
           />
           <div className="list">
             {newBoxes.map((box) => {
-              return <BoxCard type="configuration" macAddress={box.mac} />;
+              return (
+                <BoxCard
+                  key={box.uuid}
+                  type="configuration"
+                  uuid={box.uuid}
+                  macAddress={box.mac}
+                />
+              );
             })}
           </div>
         </section>
       )}
-      {boxes.length !== 0 && (
+      {pendingBoxes.length > 0 && (
         <section className="section">
-          <h2 className="sectionTitle">Vos appareils</h2>
+          <h2 className="sectionTitle">En attente d'assignation</h2>
 
           <div className="list">
-            {boxes.map((box) => {
+            {pendingBoxes.map((box) => {
               return (
                 <BoxCard
+                  key={box.uuid}
                   type="link"
                   name={box.name}
                   link={`/devices/${box.uuid}`}
@@ -47,6 +57,26 @@ const Devices = () => {
           </div>
         </section>
       )}
+      <section className="section">
+        <h2 className="sectionTitle">Vos appareils</h2>
+
+        {boxes.length > 0 ? (
+          <div className="list">
+            {boxes.map((box) => {
+              return (
+                <BoxCard
+                  key={box.uuid}
+                  type="link"
+                  name={box.name}
+                  link={`/devices/${box.uuid}`}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          <InfoMessage type="info" message="Aucune boite n'a été assignée" />
+        )}
+      </section>
     </main>
   );
 };
