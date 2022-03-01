@@ -318,13 +318,13 @@ def dataGetLatest(request, box_uuid):
     dataToPass = []
 
     for dataType in dataTypes:
-        print(dataType.id)
-
         if Data.objects.filter(
                 box=box_uuid, created_at__contains=today, data_type=dataType.id).exists():
             data = Data.objects.filter(
                 box=box_uuid, created_at__contains=today, data_type=dataType.id).latest('created_at')
             dataToPass.append(data)
+
+    print(dataToPass)
 
     serializer = DataSerializer(
         dataToPass, many=True)

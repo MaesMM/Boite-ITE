@@ -24,6 +24,7 @@ const Room = () => {
 
   const [boxes, setBoxes] = useState([]);
   const [data, setData] = useState(null);
+  const [last, setLast] = useState(null);
 
   const onlyNumbers = (e) => {
     e.target.value = e.target.value
@@ -64,11 +65,13 @@ const Room = () => {
       api.get(`/data/get/${selectedBox}/today/`).then((res) => {
         setData(res.data);
       });
-  }, [selectedBox]);
 
-  useEffect(() => {
-    console.log(category);
-  }, [category]);
+    selectedBox &&
+      api.get(`/data/get/${selectedBox}/latest/`).then((res) => {
+        console.log(res.data);
+        setLast(res.data);
+      });
+  }, [selectedBox]);
 
   const [chartData, setChartData] = useState({
     labels: [],
@@ -238,7 +241,7 @@ const Room = () => {
             <DataCard
               type="plain"
               title="Heure du dernier relevé"
-              value="16:08"
+              value={last && moment(last[0].created_at).format("HH:mm")}
             />
           </div>
           <section className={styles.dataSection}>
@@ -255,7 +258,13 @@ const Room = () => {
               <article className={`${styles.data} reveal`}>
                 <DataCard
                   title="Dernier relevé"
-                  value={`${category.value} ${category.unit}`}
+                  value={`${
+                    last &&
+                    last.filter((data) => {
+                      if (data.data_type === category.id) return true;
+                      else return false;
+                    })[0].value
+                  } ${category.unit}`}
                 />
                 {category.name === "gas" && (
                   <div className="list">
