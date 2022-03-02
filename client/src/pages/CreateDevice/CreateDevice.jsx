@@ -19,7 +19,7 @@ const CreateDevice = () => {
       .then((res) => res.status === 200 && navigate("/devices"));
   };
   return (
-    <main className="page">
+    <main>
       <h1 className="pageTitle">Configurer un nouvel appareil</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <section className="section">

@@ -2,6 +2,7 @@ import RoomCard from "../RoomCard/RoomCard";
 import styles from "./BuildingContainer.module.scss";
 
 import { ReactComponent as Plus } from "../../../assets/icons/Plus.svg";
+import { ReactComponent as Delete } from "../../../assets/icons/Delete.svg";
 
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -19,6 +20,7 @@ const BuildingContainer = ({ name, uuid }) => {
     <article className={styles.container}>
       <header className={styles.header}>
         <h2 className={styles.name}>{name && name}</h2>
+        <Delete className={styles.delete} />
       </header>
       <div className="list">
         {rooms &&

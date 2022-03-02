@@ -4,13 +4,15 @@ import styles from "./Device.module.scss";
 import { useForm } from "react-hook-form";
 
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../../services/api";
 
 const Device = () => {
   const [room, setRoom] = useState(null);
   const [rooms, setRooms] = useState([]);
   const { uuid } = useParams();
+
+  let navigate = useNavigate();
 
   const [data, setData] = useState(null);
 
@@ -28,10 +30,17 @@ const Device = () => {
   }, [uuid]);
 
   const handleAssignement = () => {
-    api.post(`/box/assign/${uuid}/`, { room: room });
+    api.post(`/box/assign/${uuid}/`, { room: room }).then((res) => {
+      res.status === 200 && navigate("/devices");
+    });
   };
   const handleUpdate = (formData) => {
     api.patch(`/box/update/${uuid}/`, formData);
+  };
+  const handleUnpair = () => {
+    api.get(`/box/unpair/${uuid}/`).then((res) => {
+      res.status === 200 && navigate("/devices");
+    });
   };
 
   useEffect(() => {
@@ -39,7 +48,7 @@ const Device = () => {
   }, [data]);
 
   return (
-    <main className="page">
+    <main>
       <div className="head">
         <h1 className="pageTitle">{data && data.name}</h1>
       </div>
@@ -88,7 +97,9 @@ const Device = () => {
       <section className="section">
         <h2 className="sectionTitle">Actions sur votre appareil</h2>
         <div className="row">
-          <div className="bigButton errorButton">Dissocier l'appareil</div>
+          <div onClick={handleUnpair} className="bigButton errorButton">
+            Dissocier l'appareil
+          </div>
         </div>
       </section>
     </main>

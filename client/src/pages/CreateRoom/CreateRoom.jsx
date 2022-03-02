@@ -44,7 +44,7 @@ const CreateRoom = () => {
   };
 
   return (
-    <main className="page">
+    <main>
       <h1 className="pageTitle">Créer une pièce</h1>
 
       <form onSubmit={handleSubmit(onSubmit)}>

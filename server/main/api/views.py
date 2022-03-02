@@ -98,6 +98,26 @@ def boxAssign(request, uuid):
     return Response(serializer.errors)
 
 
+@api_view(["GET"])
+def boxUnpair(request, uuid):
+
+    try:
+        box = Box.objects.get(uuid=uuid)
+
+        dataToPass = {"room": None, "name": None}
+        serializer = BoxSerializer(
+            instance=box, data=dataToPass, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(serializer.errors)
+
+    except:
+        return Response("No box")
+
+
 #! --- BUILDINGS ---
 
 
@@ -262,13 +282,35 @@ def dataCreate(request):
 
     box = Box.objects.get(mac=data["mac"])
 
+    if data["battery"]:
+
+        try:
+            dataType = DataType.objects.get(name="battery")
+
+            dataToPass = {"box": box.uuid, "data_type": dataType.id,
+                          "value": data["battery"], "isError": False}
+            serializer = DataSerializer(
+                data=dataToPass)
+
+            if serializer.is_valid():
+                serializer.save()
+
+            dataToPass = {"battery": data["battery"]}
+            serializer = BoxSerializer(
+                instance=box, data=dataToPass, partial=True)
+
+            if serializer.is_valid():
+                serializer.save()
+        except:
+            pass
+
     for sample in data["sensors_data"].items():
         sampleType = sample[0]
         sampleValue = sample[1]
 
-        dataType = DataType.objects.get(name=sampleType)
+        try:
 
-        if dataType:
+            dataType = DataType.objects.get(name=sampleType)
 
             dataToPass = {"box": box.uuid, "data_type": dataType.id,
                           "value": sampleValue, "isError": False}
@@ -280,19 +322,29 @@ def dataCreate(request):
                 serializer.save()
             else:
                 print(serializer.errors)
+        except:
+            pass
 
-        # value, isError, data_type_id, box_id
+        for error in data["errors"].items():
+            erroType = error[0]
+            errorValue = error[1]
 
-    # dataType = DataType.objects.get(name=data["name"])
+            try:
+                dataType = DataType.objects.get(name=erroType)
 
-    # serializer = DataTypeSerializer(
-    #     instance=dataType, data=request.data, partial=True)
+                dataToPass = {"box": box.uuid, "data_type": dataType.id,
+                              "value": errorValue, "isError": True}
 
-    # if serializer.is_valid():
-    #     serializer.save()
-    #     return Response(serializer.data)
+                serializer = DataSerializer(
+                    data=dataToPass)
 
-    # return Response(serializer.errors)
+                if serializer.is_valid():
+                    serializer.save()
+                else:
+                    print(serializer.errors)
+            except:
+                pass
+
     return Response(data)
 
 
@@ -302,7 +354,7 @@ def dataGetToday(request, box_uuid):
     today = datetime.today().date()
 
     data = Data.objects.filter(
-        box=box_uuid, created_at__contains=today)
+        box=box_uuid, isError=False, created_at__contains=today)
     serializer = DataSerializer(
         data, many=True)
     return Response(serializer.data)
@@ -319,13 +371,33 @@ def dataGetLatest(request, box_uuid):
 
     for dataType in dataTypes:
         if Data.objects.filter(
-                box=box_uuid, created_at__contains=today, data_type=dataType.id).exists():
+                box=box_uuid, isError=False, created_at__contains=today, data_type=dataType.id).exists():
             data = Data.objects.filter(
-                box=box_uuid, created_at__contains=today, data_type=dataType.id).latest('created_at')
+                box=box_uuid, isError=False, created_at__contains=today, data_type=dataType.id).latest('created_at')
             dataToPass.append(data)
-
-    print(dataToPass)
 
     serializer = DataSerializer(
         dataToPass, many=True)
     return Response(serializer.data)
+
+
+@api_view(["GET"])
+def dataTotalToday(request):
+
+    today = datetime.today().date()
+
+    dataTypes = DataType.objects.all()
+
+    dataTypesSerialized = DataTypeSerializer(
+        dataTypes, many=True)
+
+    data = Data.objects.filter(
+        created_at__contains=today)
+
+    dataSerialized = DataSerializer(
+        data, many=True)
+
+    count = len(dataSerialized.data) / len(dataTypesSerialized.data)
+    print(count)
+
+    return Response(count)

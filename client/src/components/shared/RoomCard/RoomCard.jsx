@@ -17,6 +17,8 @@ const RoomCard = ({ uuid }) => {
   const [data, setData] = useState(null);
   const [roomData, setRoomData] = useState(null);
 
+  const [types, setTypes] = useState(null);
+
   useEffect(() => {
     api.get(`/room/${uuid}/`).then((res) => {
       setRoomData(res.data);
@@ -26,9 +28,9 @@ const RoomCard = ({ uuid }) => {
   useEffect(() => {
     roomData && setIsSwitchedOn(roomData.state);
     roomData &&
+      roomData.boxes.length > 0 &&
       api.get(`/data/get/${roomData.boxes[0].uuid}/latest/`).then((res) => {
         res.data && setData(res.data);
-        console.log(res.data);
       });
   }, [roomData]);
 
@@ -37,6 +39,10 @@ const RoomCard = ({ uuid }) => {
       isTouched &&
       api.patch(`/room/update/${uuid}/`, { state: isSwitchedOn });
   }, [isSwitchedOn]);
+
+  useEffect(() => {
+    api.get("/data-type/all/").then((res) => setTypes(res.data));
+  }, []);
 
   return (
     <article className={styles.container}>
@@ -69,7 +75,21 @@ const RoomCard = ({ uuid }) => {
           </div>
           <span className={styles.value}>
             {data
-              ? `${data.filter((e) => e.data_type === 3)[0].value} °C`
+              ? `${
+                  types &&
+                  data.filter(
+                    (e) =>
+                      types.find((el) => el.name === "temperature") &&
+                      e.data_type ===
+                        types.find((el) => el.name === "temperature").id
+                  ).length > 0 &&
+                  data.filter(
+                    (e) =>
+                      types.find((el) => el.name === "temperature") &&
+                      e.data_type ===
+                        types.find((el) => el.name === "temperature").id
+                  )[0].value
+                } °C`
               : "--"}
           </span>
         </li>
@@ -79,10 +99,25 @@ const RoomCard = ({ uuid }) => {
           </div>
           <span className={styles.value}>
             {data
-              ? `${data.filter((e) => e.data_type === 4)[0].value} %`
+              ? `${
+                  types &&
+                  data.filter(
+                    (e) =>
+                      types.find((el) => el.name === "humidity") &&
+                      e.data_type ===
+                        types.find((el) => el.name === "humidity").id
+                  ).length > 0 &&
+                  data.filter(
+                    (e) =>
+                      types.find((el) => el.name === "humidity") &&
+                      e.data_type ===
+                        types.find((el) => el.name === "humidity").id
+                  )[0].value
+                } %`
               : "--"}
           </span>
         </li>
+
         <li className={styles.detail}>
           <div className={styles.icon}>
             <Sun className={styles.sun} />
@@ -90,9 +125,19 @@ const RoomCard = ({ uuid }) => {
           <span className={styles.value}>
             {data
               ? `${
-                  data.filter((e) => e.data_type === 5)[0] !== undefined
-                    ? data.filter((e) => e.data_type === 5)[0].value
-                    : "--"
+                  types &&
+                  data.filter(
+                    (e) =>
+                      types.find((el) => el.name === "luminosity") &&
+                      e.data_type ===
+                        types.find((el) => el.name === "luminosity").id
+                  ).length > 0 &&
+                  data.filter(
+                    (e) =>
+                      types.find((el) => el.name === "luminosity") &&
+                      e.data_type ===
+                        types.find((el) => el.name === "luminosity").id
+                  )[0].value
                 } lux`
               : "--"}
           </span>

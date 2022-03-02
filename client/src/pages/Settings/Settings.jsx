@@ -25,7 +25,7 @@ const Settings = () => {
   }, []);
 
   return (
-    <main className="page">
+    <main>
       <h1 className="pageTitle">Paramètres</h1>
       <section className="section">
         <h2 className="sectionTitle">Votre compte</h2>

@@ -55,9 +55,13 @@
 }
 
 .previous {
+  width: 24px;
+  height: 24px;
   transform: rotate(90deg);
 }
 .next {
+  width: 24px;
+  height: 24px;
   transform: rotate(-90deg);
 }
 

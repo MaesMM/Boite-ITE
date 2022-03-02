@@ -38,7 +38,7 @@ const Room = () => {
   useEffect(() => {
     api.get("/data-type/all/").then((res) => {
       setCategories(res.data);
-      setCategory(res.data[0]);
+      setCategory(res.data.find((el) => el.name === "temperature"));
     });
   }, []);
 
@@ -74,15 +74,15 @@ const Room = () => {
   }, [selectedBox]);
 
   const [chartData, setChartData] = useState({
-    labels: [],
+    labels: ["--", "--"],
 
     datasets: [
       {
-        label: "My First dataset",
+        label: "--",
         fill: true,
         backgroundColor: "hsla(181, 60%, 50%, 0.1)",
         borderColor: "hsl(181, 60%, 50%)",
-        data: [],
+        data: [10, 10],
         lineTension: 0.25,
       },
     ],
@@ -101,7 +101,9 @@ const Room = () => {
             return data.value;
           })
       );
+
     data &&
+      data.length > 0 &&
       category &&
       setChartData({
         labels: data
@@ -140,7 +142,7 @@ const Room = () => {
   };
 
   return (
-    <main className="page">
+    <main>
       <div className={`row ${styles.headRow}`}>
         <div className={`row ${styles.topRow}`}>
           <div
@@ -203,127 +205,151 @@ const Room = () => {
               />
             </section>
           </section>
-          <section></section>
-          <h2 className="sectionTitle">Relevés</h2>
+          <section>
+            <h2 className="sectionTitle">Relevés</h2>
 
-          <div className="form-group">
-            <label className="label">Intervale de relevés</label>
-            <div className="input timeInput">
-              <input
-                type="text"
-                defaultValue="0"
-                onChange={(e) => onlyNumbers(e)}
-                maxLength={2}
-              />
-              <span>h</span>
-              <input
-                type="text"
-                defaultValue="30"
-                maxLength={2}
-                onChange={(e) => onlyNumbers(e)}
-              />
-              <span>min</span>
-              <input
-                type="text"
-                defaultValue="0"
-                maxLength={2}
-                onChange={(e) => onlyNumbers(e)}
-              />
-              <span>sec</span>
-            </div>
-          </div>
-          <div className="list">
-            <DataCard
-              type="plain"
-              title="Relevés aujourd'hui"
-              value={data ? data.length : "--"}
-            />
-            <DataCard
-              type="plain"
-              title="Heure du dernier relevé"
-              value={last && moment(last[0].created_at).format("HH:mm")}
-            />
-          </div>
-          <section className={styles.dataSection}>
-            <h2 className="sectionTitle">Données</h2>
-            <div className={styles.categorySelector}>
-              <CategorySelector
-                categories={categories.length > 0 && categories}
-                selected={category}
-                setSelected={setCategory}
-              />
-            </div>
-
-            {category && (
-              <article className={`${styles.data} reveal`}>
-                <DataCard
-                  title="Dernier relevé"
-                  value={`${
-                    last &&
-                    last.filter((data) => {
-                      if (data.data_type === category.id) return true;
-                      else return false;
-                    })[0].value
-                  } ${category.unit}`}
+            <div className="form-group">
+              <label className="label">Intervale de relevés</label>
+              <div className="input timeInput">
+                <input
+                  type="text"
+                  defaultValue="0"
+                  onChange={(e) => onlyNumbers(e)}
+                  maxLength={2}
                 />
-                {category.name === "gas" && (
-                  <div className="list">
-                    <DataCard type="good" title="Présence de CO" value="Non" />
-                    <DataCard
-                      type="good"
-                      title="Présence de Butane"
-                      value="Non"
-                    />
-                    <DataCard
-                      type="bad"
-                      title="Présence de Propane"
-                      value="Oui"
-                    />
-                  </div>
-                )}
+                <span>h</span>
+                <input
+                  type="text"
+                  defaultValue="30"
+                  maxLength={2}
+                  onChange={(e) => onlyNumbers(e)}
+                />
+                <span>min</span>
+                <input
+                  type="text"
+                  defaultValue="0"
+                  maxLength={2}
+                  onChange={(e) => onlyNumbers(e)}
+                />
+                <span>sec</span>
+              </div>
+            </div>
+            <div className="list">
+              <DataCard
+                type="plain"
+                title="Relevés aujourd'hui"
+                value={data ? data.length : "--"}
+              />
+              <DataCard
+                type="plain"
+                title="Heure du dernier relevé"
+                value={
+                  last && last.length > 0
+                    ? moment(last[0].created_at).format("HH:mm")
+                    : "--"
+                }
+              />
+            </div>
+            <section className={styles.dataSection}>
+              <h2 className="sectionTitle">Données</h2>
+              <div className={styles.categorySelector}>
+                <CategorySelector
+                  categories={categories.length > 0 && categories}
+                  selected={category}
+                  setSelected={setCategory}
+                />
+              </div>
 
-                <article className={styles.tracking}>
-                  <header className={styles.header}>
-                    <h2>{`${category.display_name} ${category.unit}`}</h2>
-                    <div className={styles.dateSelector}>
-                      <Arrow className={styles.previous} />
-                      <span className={styles.day}>Aujourd'hui</span>
-                      <Arrow className={styles.next} />
-                    </div>
-                  </header>
-                  <div className="list">
-                    <DataCard
-                      type="minTemp"
-                      title={`${category.display_name} min`}
-                      value={`${Math.min(...selectedValues).toFixed(1)} ${
-                        category.unit
-                      }`}
-                    />
-                    <DataCard
-                      type="temperature"
-                      title="Température moyenne"
-                      value={`${average(selectedValues).toFixed(1)} ${
-                        category.unit
-                      }`}
-                    />
-                    <DataCard
-                      type="maxTemp"
-                      title={`${category.display_name} max`}
-                      value={`${Math.max(...selectedValues).toFixed(1)} ${
-                        category.unit
-                      }`}
-                    />
-                    <div className={styles.chart}>
-                      <LineChart
-                        chartData={chartData}
-                        min={Math.min(...selectedValues) - 2}
-                        max={Math.max(...selectedValues) + 2}
+              {category && (
+                <article className={`${styles.data} reveal`}>
+                  <DataCard
+                    title="Dernier relevé"
+                    value={`${
+                      last &&
+                      last.filter((data) => {
+                        if (data.data_type === category.id) return true;
+                        else return false;
+                      }).length > 0 &&
+                      last.filter((data) => {
+                        if (data.data_type === category.id) return true;
+                        else return false;
+                      })[0].value
+                        ? last.filter((data) => {
+                            if (data.data_type === category.id) return true;
+                            else return false;
+                          })[0].value
+                        : "--"
+                    } ${category.unit}`}
+                  />
+                  {category.name === "gas" && (
+                    <div className="list">
+                      <DataCard
+                        type="good"
+                        title="Présence de CO"
+                        value="Non"
+                      />
+                      <DataCard
+                        type="good"
+                        title="Présence de Butane"
+                        value="Non"
+                      />
+                      <DataCard
+                        type="bad"
+                        title="Présence de Propane"
+                        value="Oui"
                       />
                     </div>
-                  </div>
+                  )}
+
+                  <article className={styles.tracking}>
+                    <header className={styles.header}>
+                      <h2>{`${category.display_name} ${category.unit}`}</h2>
+                      <div className={styles.dateSelector}>
+                        <Arrow className={styles.previous} />
+                        <span className={styles.day}>Aujourd'hui</span>
+                        <Arrow className={styles.next} />
+                      </div>
+                    </header>
+                    <div className="list">
+                      <DataCard
+                        type="minTemp"
+                        title={`${category.display_name} min`}
+                        value={`${
+                          selectedValues.length > 0
+                            ? Math.min(...selectedValues).toFixed(1)
+                            : "--"
+                        } ${category.unit}`}
+                      />
+                      <DataCard
+                        type="temperature"
+                        title="Température moyenne"
+                        value={`${
+                          selectedValues.length > 0
+                            ? average(selectedValues).toFixed(1)
+                            : "--"
+                        } ${category.unit}`}
+                      />
+                      <DataCard
+                        type="maxTemp"
+                        title={`${category.display_name} max`}
+                        value={`${
+                          selectedValues.length > 0
+                            ? Math.max(...selectedValues).toFixed(1)
+                            : "--"
+                        } ${category.unit}`}
+                      />
+                      <div className={styles.chart}>
+                        <LineChart
+                          chartData={chartData}
+                          min={Math.min(...selectedValues) - 2}
+                          max={Math.max(...selectedValues) + 2}
+                        />
+                      </div>
+                    </div>
+                  </article>
                 </article>
-              </article>
-            )}
+              )}
+            </section>
             {/*category === 4 && (
               <article className={`${styles.data} reveal`}>
                 <DataCard title="Dernière humidité relevée" value="26%" />

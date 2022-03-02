@@ -25,14 +25,26 @@ body {
 }
 
 .page {
+  position: relative;
   padding: 80px 40px;
   box-sizing: border-box;
   min-width: 240px;
-  margin-left: 320px;
-  width: fit-content;
+  margin-left: 112px;
+  width: 100%;
   min-height: calc(100vh - $header-height);
   overflow-y: scroll;
-  animation: appear 0.5s ease-in-out forwards;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+  transition: margin 0.5s ease;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  main {
+    z-index: 100;
+    animation: appear 0.5s ease-in-out forwards;
+  }
 }
 
 .reveal {
@@ -40,6 +52,8 @@ body {
 }
 
 .pageTitle {
+  position: relative;
+  z-index: -1000;
   display: flex;
   align-items: center;
   height: 72px;
@@ -143,11 +157,9 @@ body {
 @keyframes appear {
   from {
     opacity: 0;
-    transform: translateX(40px);
   }
   to {
     opacity: 1;
-    transform: translateX(0);
   }
 }
 
@@ -256,4 +268,11 @@ textarea:focus {
 
 .full-width {
   width: 100% !important;
+}
+
+@media screen and (min-width: 768px) {
+  .page {
+    margin-left: 320px;
+    transition: margin 0.5s ease;
+  }
 }

@@ -6,9 +6,8 @@ const Informations = () => {
     window.scrollTo(0, 0);
   }, []);
 
-
   return (
-    <main className="page">
+    <main>
       <h1 className="pageTitle">Informations</h1>
     </main>
   );

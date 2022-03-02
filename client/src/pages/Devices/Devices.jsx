@@ -15,7 +15,7 @@ const Devices = () => {
   }, []);
 
   return (
-    <main className="page">
+    <main className="reveal">
       <h1 className="pageTitle">Vos appareils</h1>
       {newBoxes.length !== 0 && (
         <section className="section">

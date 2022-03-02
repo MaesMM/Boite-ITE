@@ -19,7 +19,7 @@ const CreateBuilding = () => {
   };
 
   return (
-    <main className="page">
+    <main className="reveal">
       <h1 className="pageTitle">Créer un nouveau batiment</h1>
       <section className="section">
         <h2 className="sectionTitle">Informations</h2>

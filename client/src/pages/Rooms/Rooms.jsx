@@ -27,7 +27,7 @@ const Rooms = () => {
   }, []);
 
   return (
-    <main className="page">
+    <main>
       <h1 className="pageTitle">Vos pièces</h1>
       {newBoxes.length !== 0 && (
         <section className="section">

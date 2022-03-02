@@ -1,6 +1,11 @@
 import styles from "./Navbar.module.scss";
 import { NavLink } from "react-router-dom";
 
+import { ReactComponent as Home } from "../../assets/icons/Home.svg";
+import { ReactComponent as Settings } from "../../assets/icons/Setting.svg";
+import { ReactComponent as Rooms } from "../../assets/icons/Rooms.svg";
+import { ReactComponent as Box } from "../../assets/icons/Box.svg";
+
 const Navbar = () => {
   return (
     <aside className={styles.navbar}>
@@ -21,7 +26,8 @@ const Navbar = () => {
               `${styles.link} ${isActive && styles.selected}`
             }
           >
-            Tableau de bord
+            <Home className={styles.icon} />
+            <span className={styles.text}>Tableau de bord</span>
           </NavLink>
           <NavLink
             to="/rooms"
@@ -29,7 +35,8 @@ const Navbar = () => {
               `${styles.link} ${isActive && styles.selected}`
             }
           >
-            Vos pièces
+            <Rooms className={styles.icon} />
+            <span className={styles.text}>Vos pièces</span>
           </NavLink>
           <NavLink
             to="/devices"
@@ -37,7 +44,8 @@ const Navbar = () => {
               `${styles.link} ${isActive && styles.selected}`
             }
           >
-            Vos appareils
+            <Box className={styles.icon} />
+            <span className={styles.text}>Vos appareils</span>
           </NavLink>
           {/* <NavLink
             to="/journal"
@@ -46,15 +54,16 @@ const Navbar = () => {
             }
           >
             Journal
-          </NavLink>
+          </NavLink>*/}
           <NavLink
             to="/settings"
             className={({ isActive }) =>
               `${styles.link} ${isActive && styles.selected}`
             }
           >
-            Paramètres
-          </NavLink> */}
+            <Settings className={styles.icon} />
+            <span className={styles.text}>Paramètres</span>
+          </NavLink>
         </nav>
       </div>
     </aside>

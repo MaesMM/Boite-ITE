@@ -84,7 +84,7 @@
 }
 
 .batteryIndicator {
-  width: var(--battery);
+  width: clamp(5%, var(--battery), 100%);
   height: 100%;
   border-radius: 2px;
 }
