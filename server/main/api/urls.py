@@ -34,6 +34,8 @@ urlpatterns = [
     path("building/<str:uuid>/", views.buildingDetail, name='building_detail'),
     path("building/update/<str:uuid>/",
          views.buildingUpdate, name='building_update'),
+    path("building/<str:uuid>/delete/",
+         views.buildingDelete, name='building_delete'),
 
     #! -- ROOMS ---
 
@@ -42,6 +44,8 @@ urlpatterns = [
     path("room/<str:uuid>/", views.roomDetail, name='room_detail'),
     path("room/update/<str:uuid>/",
          views.roomUpdate, name='room_update'),
+    path("room/<str:uuid>/delete/",
+         views.roomDelete, name='room_delete'),
 
     #! -- DATA TYPES --
 

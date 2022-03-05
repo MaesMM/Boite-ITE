@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useParams, useNavigate } from "react-router-dom";
+import notificationContext from "../../contexts/notificationContext";
 import api from "../../services/api";
 
 const CreateDevice = () => {
@@ -9,6 +10,8 @@ const CreateDevice = () => {
 
   const { register, handleSubmit } = useForm();
 
+  const { setNotification } = useContext(notificationContext);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -16,7 +19,23 @@ const CreateDevice = () => {
   const onSubmit = (formData) => {
     api
       .patch(`/box/update/${uuid}/`, formData)
-      .then((res) => res.status === 200 && navigate("/devices"));
+      .then((res) => {
+        console.log(res);
+        res.status === 200 && navigate("/devices");
+        res.status === 200 &&
+          setNotification({
+            show: true,
+            type: "success",
+            text: "Appareil créé avec succès !",
+          });
+      })
+      .catch(() => {
+        setNotification({
+          show: true,
+          type: "error",
+          text: "Une erreur est survenue",
+        });
+      });
   };
   return (
     <main>

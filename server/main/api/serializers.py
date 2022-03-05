@@ -19,7 +19,7 @@ class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = ['uuid', 'building',
-                  'name', 'color', "boxes", "state", 'collect_frequency']
+                  'name', 'color', "boxes", "state"]
         # depth = 1
 
     def create(self, validated_data):

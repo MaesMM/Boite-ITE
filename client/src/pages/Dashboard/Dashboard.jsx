@@ -6,16 +6,19 @@ import styles from "./Dashboard.module.scss";
 
 import { ReactComponent as Plus } from "../../assets/icons/Plus.svg";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import BuildingContainer from "../../components/shared/BuildingContainer/BuildingContainer";
 import api from "../../services/api";
 import { Link } from "react-router-dom";
 import Connection from "../../components/shared/Connection/Connection";
+import refreshContext from "../../contexts/refreshContext";
 
 const Dashboard = () => {
   const [buildings, setBuildings] = useState([]);
   const [newBoxes, setNewBoxes] = useState([]);
   const [count, setCount] = useState("--");
+
+  const { refresh } = useContext(refreshContext);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -29,12 +32,19 @@ const Dashboard = () => {
     api.get("/data/get-total/today/").then((res) => setCount(res.data));
   }, []);
 
+  useEffect(() => {
+    api.get("/buildings/").then((res) => {
+      setBuildings(res.data);
+    });
+
+    api.get("/boxes/new/").then((res) => setNewBoxes(res.data));
+
+    api.get("/data/get-total/today/").then((res) => setCount(res.data));
+  }, [refresh]);
+
   return (
-    <>
+    <div className="relative">
       <main>
-        <div className={styles.yee}>
-          <Connection />
-        </div>
         <h1 className="pageTitle">Tableau de bord</h1>
         {newBoxes.length !== 0 && (
           <section className="section">
@@ -90,7 +100,7 @@ const Dashboard = () => {
                 title="Relevés aujourd'hui"
                 value={count}
               />
-              <DataCard type="alerts" title="Alertes" value="69" />
+              <DataCard type="alerts" title="Alertes" value="0" />
             </article>
           </section>
         </section>
@@ -122,7 +132,8 @@ const Dashboard = () => {
           </div>
         </section>
       </main>
-    </>
+      <Connection />
+    </div>
   );
 };
 

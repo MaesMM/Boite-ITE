@@ -1,11 +1,14 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import api from "../../services/api";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import notificationContext from "../../contexts/notificationContext";
 
 const CreateBuilding = () => {
   const { register, handleSubmit } = useForm();
   let navigate = useNavigate();
+
+  const { setNotification } = useContext(notificationContext);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -15,7 +18,22 @@ const CreateBuilding = () => {
     console.log(formData);
     api
       .post("/building/create/", formData)
-      .then((res) => res.status === 200 && navigate("/rooms"));
+      .then((res) => {
+        res.status === 200 && navigate("/rooms");
+        res.status === 200 &&
+          setNotification({
+            show: true,
+            type: "success",
+            text: "Batiment créé avec succès !",
+          });
+      })
+      .catch(() => {
+        setNotification({
+          show: true,
+          type: "error",
+          text: "Une erreur est survenue",
+        });
+      });
   };
 
   return (
@@ -29,7 +47,7 @@ const CreateBuilding = () => {
             <input
               type="text"
               {...register("name")}
-              placeholder="Nom de l'appareil"
+              placeholder="Nom du batiment"
               className="input"
             />
           </div>

@@ -5,14 +5,17 @@ import styles from "./Rooms.module.scss";
 
 import { ReactComponent as Plus } from "../../assets/icons/Plus.svg";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import BuildingContainer from "../../components/shared/BuildingContainer/BuildingContainer";
 
 import api from "../../services/api";
+import refreshContext from "../../contexts/refreshContext";
 
 const Rooms = () => {
   const [buildings, setBuildings] = useState([]);
   const [newBoxes, setNewBoxes] = useState([]);
+
+  const { refresh } = useContext(refreshContext);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -25,6 +28,14 @@ const Rooms = () => {
       setNewBoxes(res.data);
     });
   }, []);
+
+  useEffect(() => {
+    api.get("/buildings/").then((res) => {
+      setBuildings(res.data);
+    });
+
+    api.get("/boxes/new/").then((res) => setNewBoxes(res.data));
+  }, [refresh]);
 
   return (
     <main>
@@ -42,6 +53,7 @@ const Rooms = () => {
               return (
                 <BoxCard
                   key={box.uuid}
+                  uuid={box.uuid}
                   type="configuration"
                   macAddress={box.mac}
                 />

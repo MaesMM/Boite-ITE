@@ -12,7 +12,7 @@ const BoxCard = ({ type, uuid, box, setBox, link, name, macAddress }) => {
       {type === "configuration" && (
         <>
           <span className={styles.text}>{macAddress}</span>
-          <Link to={`/devices/${uuid}/configure`} className="button">
+          <Link to={`/devices/${uuid && uuid}/configure`} className="button">
             Configurer
           </Link>
         </>

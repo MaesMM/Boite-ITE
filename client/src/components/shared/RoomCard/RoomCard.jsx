@@ -7,9 +7,10 @@ import { ReactComponent as Thermometer } from "../../../assets/icons/Thermometer
 import { ReactComponent as Drop } from "../../../assets/icons/Drop.svg";
 import { ReactComponent as Sun } from "../../../assets/icons/Sun.svg";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../../../services/api";
+import notificationContext from "../../../contexts/notificationContext";
 
 const RoomCard = ({ uuid }) => {
   const [isSwitchedOn, setIsSwitchedOn] = useState(false);
@@ -18,6 +19,8 @@ const RoomCard = ({ uuid }) => {
   const [roomData, setRoomData] = useState(null);
 
   const [types, setTypes] = useState(null);
+
+  const { setNotification } = useContext(notificationContext);
 
   useEffect(() => {
     api.get(`/room/${uuid}/`).then((res) => {
@@ -37,7 +40,25 @@ const RoomCard = ({ uuid }) => {
   useEffect(() => {
     roomData &&
       isTouched &&
-      api.patch(`/room/update/${uuid}/`, { state: isSwitchedOn });
+      api
+        .patch(`/room/update/${uuid}/`, { state: isSwitchedOn })
+        .then((res) => {
+          res.status === 200 &&
+            setNotification({
+              show: true,
+              type: "info",
+              text: `Relevés ${isSwitchedOn ? "ON" : "OFF"} dans ${
+                roomData.name
+              }`,
+            });
+        })
+        .catch(() => {
+          setNotification({
+            show: true,
+            type: "error",
+            text: "Une erreur est survenue",
+          });
+        });
   }, [isSwitchedOn]);
 
   useEffect(() => {
@@ -74,15 +95,19 @@ const RoomCard = ({ uuid }) => {
             <Thermometer className={styles.thermometer} />
           </div>
           <span className={styles.value}>
-            {data
+            {data &&
+            types &&
+            data.filter(
+              (e) =>
+                types.find((el) => el.name === "temperature") &&
+                e.data_type === types.find((el) => el.name === "temperature").id
+            ).length > 0 &&
+            data.filter(
+              (e) =>
+                types.find((el) => el.name === "temperature") &&
+                e.data_type === types.find((el) => el.name === "temperature").id
+            )[0].value
               ? `${
-                  types &&
-                  data.filter(
-                    (e) =>
-                      types.find((el) => el.name === "temperature") &&
-                      e.data_type ===
-                        types.find((el) => el.name === "temperature").id
-                  ).length > 0 &&
                   data.filter(
                     (e) =>
                       types.find((el) => el.name === "temperature") &&
@@ -98,15 +123,19 @@ const RoomCard = ({ uuid }) => {
             <Drop className={styles.drop} />
           </div>
           <span className={styles.value}>
-            {data
+            {data &&
+            types &&
+            data.filter(
+              (e) =>
+                types.find((el) => el.name === "humidity") &&
+                e.data_type === types.find((el) => el.name === "humidity").id
+            ).length > 0 &&
+            data.filter(
+              (e) =>
+                types.find((el) => el.name === "humidity") &&
+                e.data_type === types.find((el) => el.name === "humidity").id
+            )[0].value
               ? `${
-                  types &&
-                  data.filter(
-                    (e) =>
-                      types.find((el) => el.name === "humidity") &&
-                      e.data_type ===
-                        types.find((el) => el.name === "humidity").id
-                  ).length > 0 &&
                   data.filter(
                     (e) =>
                       types.find((el) => el.name === "humidity") &&
@@ -123,15 +152,19 @@ const RoomCard = ({ uuid }) => {
             <Sun className={styles.sun} />
           </div>
           <span className={styles.value}>
-            {data
+            {data &&
+            types &&
+            data.filter(
+              (e) =>
+                types.find((el) => el.name === "luminosity") &&
+                e.data_type === types.find((el) => el.name === "luminosity").id
+            ).length > 0 &&
+            data.filter(
+              (e) =>
+                types.find((el) => el.name === "luminosity") &&
+                e.data_type === types.find((el) => el.name === "luminosity").id
+            )[0].value
               ? `${
-                  types &&
-                  data.filter(
-                    (e) =>
-                      types.find((el) => el.name === "luminosity") &&
-                      e.data_type ===
-                        types.find((el) => el.name === "luminosity").id
-                  ).length > 0 &&
                   data.filter(
                     (e) =>
                       types.find((el) => el.name === "luminosity") &&

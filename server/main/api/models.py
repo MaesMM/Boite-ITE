@@ -35,7 +35,6 @@ class Room(models.Model):
     name = models.CharField(max_length=32, unique=True)
     state = models.BooleanField(default=True)
     color = models.CharField(max_length=16)
-    collect_frequency = models.IntegerField(default=300)
 
     def __str__(self):
         return self.name
@@ -44,13 +43,14 @@ class Room(models.Model):
 class Box(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     room = models.ForeignKey(Room, related_name='boxes',
-                             null=True, on_delete=models.CASCADE)
+                             null=True, on_delete=models.DO_NOTHING)
 
     name = models.CharField(max_length=32, null=True)
     battery = models.IntegerField(default=0)
     sampling = models.BooleanField(default=True)
     last_ping = models.DateTimeField(default=datetime.now, null=True)
     next_ping = models.DateTimeField(default=datetime.now, null=True)
+    collect_frequency = models.IntegerField(default=300)
     mac = models.CharField(max_length=32)
 
     def __str__(self):

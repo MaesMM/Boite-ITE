@@ -1,6 +1,6 @@
 import styles from "./CreateRoom.module.scss";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import InfoMessage from "../../components/shared/InfoMessage/InfoMessage";
 import BoxSelector from "../../components/shared/Selector/Selector";
 
@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 
 import api from "../../services/api";
 import { useNavigate, useParams } from "react-router-dom";
+import notificationContext from "../../contexts/notificationContext";
 
 const CreateRoom = () => {
   const { uuid } = useParams();
@@ -22,6 +23,8 @@ const CreateRoom = () => {
 
   const [boxes, setBoxes] = useState([]);
   const [newBoxes, setNewBoxes] = useState([]);
+
+  const { setNotification } = useContext(notificationContext);
 
   useEffect(() => {
     setColorValue({ "--color": color });
@@ -38,9 +41,33 @@ const CreateRoom = () => {
   }, []);
 
   const onSubmit = (formData) => {
+    let dataToPass = { ...formData };
+
+    if (selection.length > 0) {
+      let boxes = [];
+
+      selection.forEach((selection) => boxes.push(selection));
+      dataToPass = { ...formData, boxes };
+    }
+
     api
-      .post("/room/create/", formData)
-      .then((res) => res.status === 200 && navigate("/rooms"));
+      .post("/room/create/", dataToPass)
+      .then((res) => {
+        res.status === 200 && navigate("/rooms");
+        res.status === 200 &&
+          setNotification({
+            show: true,
+            type: "success",
+            text: "Salle créée avec succès !",
+          });
+      })
+      .catch(() => {
+        setNotification({
+          show: true,
+          type: "error",
+          text: "Une erreur est survenue",
+        });
+      });
   };
 
   return (
@@ -94,7 +121,7 @@ const CreateRoom = () => {
                 return (
                   <BoxSelector
                     key={box.uuid}
-                    type="radio"
+                    type="checkbox"
                     id={box.uuid}
                     name={box.name}
                     selection={selection}

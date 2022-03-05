@@ -4,29 +4,38 @@ import BoxCard from "../../components/shared/BoxCard/BoxCard";
 
 import styles from "./Room.module.scss";
 
+import { ReactComponent as Delete } from "../../assets/icons/Delete.svg";
 import { ReactComponent as Arrow } from "../../assets/icons/Arrow.svg";
+import { ReactComponent as Check } from "../../assets/icons/Success.svg";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import CategorySelector from "../../components/shared/CategorySelector/CategorySelector";
 import LineChart from "../../components/shared/Chart/LineChart";
 import Switch from "../../components/shared/Switch/Switch";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../../services/api";
 
 import moment from "moment";
+import refreshContext from "../../contexts/refreshContext";
+import notificationContext from "../../contexts/notificationContext";
+import { useForm } from "react-hook-form";
 
 const Room = () => {
   const { uuid } = useParams();
+  const navigate = useNavigate();
   const [sampling, setSampling] = useState(false);
   const [category, setCategory] = useState({});
   const [roomData, setRoomData] = useState(null);
   const [isTouched, setIsTouched] = useState(false);
+
+  const [timeChanged, setTimeChanged] = useState(false);
 
   const [boxes, setBoxes] = useState([]);
   const [data, setData] = useState(null);
   const [last, setLast] = useState(null);
 
   const onlyNumbers = (e) => {
+    !timeChanged && setTimeChanged(true);
     e.target.value = e.target.value
       .replace(/[^0-9.]/g, "")
       .replace(/(\..*?)\..*/g, "$1");
@@ -68,7 +77,6 @@ const Room = () => {
 
     selectedBox &&
       api.get(`/data/get/${selectedBox}/latest/`).then((res) => {
-        console.log(res.data);
         setLast(res.data);
       });
   }, [selectedBox]);
@@ -141,31 +149,89 @@ const Room = () => {
     return arr.reduce((a, b) => parseInt(a) + parseInt(b), 0) / arr.length;
   };
 
+  const { refresh, setRefresh } = useContext(refreshContext);
+  const { setNotification } = useContext(notificationContext);
+
+  const handleDelete = () => {
+    if (uuid) {
+      if (
+        window.confirm(
+          "Êtes-vous sûr de vouloir supprimer cette pièce ? Cela entrainera l'oubli des boîtes qui y sont assignées"
+        )
+      ) {
+        api
+          .delete(`/room/${uuid}/delete/`)
+          .then((res) => {
+            res.status === 200 && setRefresh(!refresh);
+            navigate("/rooms");
+          })
+          .then((res) => {
+            res.status === 200 && navigate("/devices");
+            res.status === 200 &&
+              setNotification({
+                show: true,
+                type: "success",
+                text: "Salle supprimée avec succès !",
+              });
+          })
+          .catch(() => {
+            setNotification({
+              show: true,
+              type: "error",
+              text: "Une erreur est survenue",
+            });
+          });
+      }
+    }
+  };
+
+  const { register, handleSubmit, getValues } = useForm();
+
+  const onSubmit = () => {
+    let hours = parseInt(getValues("hours"));
+    let minutes = parseInt(getValues("minutes"));
+    let seconds = parseInt(getValues("seconds"));
+
+    let hoursInSec = hours * 3600;
+    let minutesInSec = minutes * 60;
+
+    let totalInMilliseconds = (hoursInSec + minutesInSec + seconds) * 1000;
+
+    api.patch(`/box/update/${selectedBox}/`, {
+      collect_frequency: totalInMilliseconds,
+    });
+    setTimeChanged(false);
+  };
+
   return (
     <main>
-      <div className={`row ${styles.headRow}`}>
-        <div className={`row ${styles.topRow}`}>
-          <div
-            className={styles.color}
-            style={{
-              "--color": roomData ? roomData.color : "#000",
-            }}
-          ></div>
-          <h2 className="pageTitle">{roomData && roomData.name}</h2>
+      <header className={styles.pageHead}>
+        <div className={`row ${styles.headRow}`}>
+          <div className={`row ${styles.topRow}`}>
+            <div
+              className={styles.color}
+              style={{
+                "--color": roomData ? roomData.color : "#000",
+              }}
+            ></div>
+            <h2 className="pageTitle">{roomData && roomData.name}</h2>
+          </div>
+          <Switch
+            styling="bigSwitch"
+            touched={isTouched}
+            setTouched={setIsTouched}
+            state={sampling}
+            setState={setSampling}
+          />
         </div>
-        <Switch
-          styling="bigSwitch"
-          touched={isTouched}
-          setTouched={setIsTouched}
-          state={sampling}
-          setState={setSampling}
-        />
-      </div>
-
-      <section className="section">
-        <h2 className="sectionTitle">Sélectionnez une boite</h2>
-        {boxes.length > 0 &&
-          boxes.map((box) => {
+        <div className={styles.delete} onClick={handleDelete}>
+          <Delete />
+        </div>
+      </header>
+      {boxes.length > 0 ? (
+        <section className="section">
+          <h2 className="sectionTitle">Sélectionnez une boite</h2>
+          {boxes.map((box) => {
             return (
               <BoxCard
                 key={box.uuid}
@@ -177,7 +243,14 @@ const Room = () => {
               />
             );
           })}
-      </section>
+        </section>
+      ) : (
+        <InfoMessage
+          type="warning"
+          title="Aucune boite n'est assignée à cette pièce"
+          message='Vous pouvez en assigner une dans la section "pièce" de l&apos;application'
+        />
+      )}
       {selectedBox && (
         <div className="reveal">
           <section className="section">
@@ -208,32 +281,76 @@ const Room = () => {
           <section>
             <h2 className="sectionTitle">Relevés</h2>
 
-            <div className="form-group">
+            <form onSubmit={handleSubmit(onSubmit)} className="form-group">
               <label className="label">Intervale de relevés</label>
-              <div className="input timeInput">
-                <input
-                  type="text"
-                  defaultValue="0"
-                  onChange={(e) => onlyNumbers(e)}
-                  maxLength={2}
-                />
-                <span>h</span>
-                <input
-                  type="text"
-                  defaultValue="30"
-                  maxLength={2}
-                  onChange={(e) => onlyNumbers(e)}
-                />
-                <span>min</span>
-                <input
-                  type="text"
-                  defaultValue="0"
-                  maxLength={2}
-                  onChange={(e) => onlyNumbers(e)}
-                />
-                <span>sec</span>
+              <div className={styles.intervalRow}>
+                <div className="input timeInput">
+                  {console.log(boxes.find((box) => (box.uuid = selectedBox)))}
+                  <input
+                    {...register("hours")}
+                    type="text"
+                    defaultValue={
+                      boxes.find((box) => (box.uuid = selectedBox)) &&
+                      boxes.find((box) => (box.uuid = selectedBox))
+                        .collect_frequency &&
+                      Math.floor(
+                        (boxes.find((box) => (box.uuid = selectedBox))
+                          .collect_frequency /
+                          (1000 * 60 * 60)) %
+                          24
+                      )
+                    }
+                    onChange={(e) => onlyNumbers(e)}
+                    maxLength={2}
+                  />
+                  <span>h</span>
+                  <input
+                    {...register("minutes")}
+                    type="text"
+                    defaultValue={
+                      boxes.find((box) => (box.uuid = selectedBox)) &&
+                      boxes.find((box) => (box.uuid = selectedBox))
+                        .collect_frequency &&
+                      Math.floor(
+                        (boxes.find((box) => (box.uuid = selectedBox))
+                          .collect_frequency /
+                          (1000 * 60)) %
+                          60
+                      )
+                    }
+                    maxLength={2}
+                    onChange={(e) => onlyNumbers(e)}
+                  />
+                  <span>min</span>
+                  <input
+                    {...register("seconds")}
+                    type="text"
+                    defaultValue={
+                      boxes.find((box) => (box.uuid = selectedBox)) &&
+                      boxes.find((box) => (box.uuid = selectedBox))
+                        .collect_frequency &&
+                      Math.floor(
+                        (boxes.find((box) => (box.uuid = selectedBox))
+                          .collect_frequency /
+                          1000) %
+                          60
+                      )
+                    }
+                    maxLength={2}
+                    onChange={(e) => onlyNumbers(e)}
+                  />
+                  <span>sec</span>
+                </div>
+                {timeChanged && (
+                  <button
+                    type="submit"
+                    className={`${styles.intervalBtn} reveal`}
+                  >
+                    <Check />
+                  </button>
+                )}
               </div>
-            </div>
+            </form>
             <div className="list">
               <DataCard
                 type="plain"
