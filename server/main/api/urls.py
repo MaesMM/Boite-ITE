@@ -1,3 +1,4 @@
+from unicodedata import name
 from django.urls import include, path
 from rest_framework import routers
 from . import views
@@ -68,5 +69,8 @@ urlpatterns = [
 
 
     #! -- MISC --
-    path("ipAddress/", views.getIpAddress, name="get_ip_address")
+    path("ipAddress/", views.getIpAddress, name="get_ip_address"),
+
+    #! -- TEST ---
+    path("test/", views.test, name="test_mqtt")
 ]

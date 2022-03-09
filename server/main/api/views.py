@@ -10,6 +10,8 @@ from .serializers import *
 from .models import *
 
 
+import json
+
 import socket
 # Create your views here.
 
@@ -58,7 +60,9 @@ def boxDetail(request, uuid):
 
 @api_view(["POST"])
 def boxCreate(request):
-    serializer = BoxSerializer(data=request.data)
+
+    data = json.loads(request.data.__getitem__("data"))
+    serializer = BoxSerializer(data=data)
 
     if serializer.is_valid():
         serializer.save()
@@ -350,8 +354,7 @@ def dataTypeDelete(request, name):
 @ api_view(["POST"])
 def dataCreate(request):
 
-    data = request.data
-
+    data = json.loads(request.data.__getitem__("data"))
     box = Box.objects.get(mac=data["mac"])
 
     if "battery" in data:
@@ -450,7 +453,7 @@ def dataGetLatest(request, box_uuid):
     return Response(serializer.data)
 
 
-@api_view(["GET"])
+@ api_view(["GET"])
 def dataTotalToday(request):
 
     today = datetime.today().date()
@@ -471,8 +474,14 @@ def dataTotalToday(request):
     return Response(count)
 
 
-@api_view(["GET"])
+@ api_view(["GET"])
 def getIpAddress(request):
     hostname = socket.gethostname()
     ip_address = socket.gethostbyname(hostname)
     return Response(ip_address)
+
+
+@ api_view(["POST"])
+def test(request):
+    print(request.data)
+    return Response(request.data)
