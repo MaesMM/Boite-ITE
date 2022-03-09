@@ -55,10 +55,10 @@ const Room = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     api.get(`/room/${uuid}/`).then((res) => {
-      setRoomData(res.data);
       setBoxList(res.data.boxes);
+      setRoomData(res.data);
     });
-  }, [uuid]);
+  }, []);
 
   useEffect(() => {
     roomData && setSampling(roomData.state);
@@ -71,18 +71,16 @@ const Room = () => {
   }, [sampling]);
 
   useEffect(() => {
-    let box = boxList.find((box) => box.mac === selectedBox);
-
-    console.log(box);
-    box &&
-      api.get(`/data/get/${box.uuid}/today/`).then((res) => {
+    if (selectedBox) {
+      api.get(`/data/get/${selectedBox}/today/`).then((res) => {
         setData(res.data);
       });
 
-    box &&
-      api.get(`/data/get/${box.uuid}/latest/`).then((res) => {
-        setLast(res.data);
-      });
+      selectedBox &&
+        api.get(`/data/get/${selectedBox}/latest/`).then((res) => {
+          setLast(res.data);
+        });
+    }
   }, [selectedBox]);
 
   const [chartData, setChartData] = useState({
@@ -192,22 +190,22 @@ const Room = () => {
   const { register, handleSubmit, getValues } = useForm();
 
   const onSubmit = () => {
-    let hours = parseInt(getValues("hours"));
-    let minutes = parseInt(getValues("minutes"));
-    let seconds = parseInt(getValues("seconds"));
+    if (selectedBox) {
+      let hours = parseInt(getValues("hours"));
+      let minutes = parseInt(getValues("minutes"));
+      let seconds = parseInt(getValues("seconds"));
 
-    let hoursInSec = hours * 3600;
-    let minutesInSec = minutes * 60;
+      let hoursInSec = hours * 3600;
+      let minutesInSec = minutes * 60;
 
-    let totalInMilliseconds = (hoursInSec + minutesInSec + seconds) * 1000;
+      let totalInMilliseconds = (hoursInSec + minutesInSec + seconds) * 1000;
 
-    api.patch(`/box/update/${selectedBox}/`, {
-      collect_frequency: totalInMilliseconds,
-    });
-    setTimeChanged(false);
+      api.patch(`/box/update/${selectedBox}/`, {
+        collect_frequency: totalInMilliseconds,
+      });
+      setTimeChanged(false);
+    }
   };
-
-  useEffect(() => console.log(selectedBox), [selectedBox]);
 
   return (
     <main>
@@ -239,11 +237,11 @@ const Room = () => {
           <h2 className="sectionTitle">Sélectionnez une boite</h2>
           <div className={`row wrap ${styles.row}`}>
             {boxList.map((box, index) => {
-              console.log(index + " : " + box.uuid);
               return (
                 <BoxCard
-                  key={box.mac}
-                  boxUuid={box.uuid}
+                  key={index}
+                  uuid={box.uuid}
+                  macAddress={box.mac}
                   name={box.name}
                   type="selection"
                   selectedBox={selectedBox}
@@ -251,8 +249,6 @@ const Room = () => {
                 />
               );
             })}
-
-            {console.log("\n")}
           </div>
         </section>
       ) : (
@@ -300,11 +296,11 @@ const Room = () => {
                     {...register("hours")}
                     type="text"
                     defaultValue={
-                      boxList.find((box) => (box.uuid = selectedBox)) &&
-                      boxList.find((box) => (box.uuid = selectedBox))
+                      boxList.find((box) => box.uuid === selectedBox) &&
+                      boxList.find((box) => box.uuid === selectedBox)
                         .collect_frequency &&
                       Math.floor(
-                        (boxList.find((box) => (box.uuid = selectedBox))
+                        (boxList.find((box) => box.uuid === selectedBox)
                           .collect_frequency /
                           (1000 * 60 * 60)) %
                           24
@@ -318,11 +314,11 @@ const Room = () => {
                     {...register("minutes")}
                     type="text"
                     defaultValue={
-                      boxList.find((box) => (box.uuid = selectedBox)) &&
-                      boxList.find((box) => (box.uuid = selectedBox))
+                      boxList.find((box) => box.uuid === selectedBox) &&
+                      boxList.find((box) => box.uuid === selectedBox)
                         .collect_frequency &&
                       Math.floor(
-                        (boxList.find((box) => (box.uuid = selectedBox))
+                        (boxList.find((box) => box.uuid === selectedBox)
                           .collect_frequency /
                           (1000 * 60)) %
                           60
@@ -336,11 +332,11 @@ const Room = () => {
                     {...register("seconds")}
                     type="text"
                     defaultValue={
-                      boxList.find((box) => (box.uuid = selectedBox)) &&
-                      boxList.find((box) => (box.uuid = selectedBox))
+                      boxList.find((box) => box.uuid === selectedBox) &&
+                      boxList.find((box) => box.uuid === selectedBox)
                         .collect_frequency &&
                       Math.floor(
-                        (boxList.find((box) => (box.uuid = selectedBox))
+                        (boxList.find((box) => box.uuid === selectedBox)
                           .collect_frequency /
                           1000) %
                           60
@@ -477,183 +473,6 @@ const Room = () => {
                 </article>
               )}
             </section>
-            {/*category === 4 && (
-              <article className={`${styles.data} reveal`}>
-                <DataCard title="Dernière humidité relevée" value="26%" />
-
-                <article className={styles.tracking}>
-                  <header className={styles.header}>
-                    <h2>Humidité %</h2>
-                    <div className={styles.dateSelector}>
-                      <Arrow className={styles.previous} />
-                      <span className={styles.day}>Aujourd'hui</span>
-                      <Arrow className={styles.next} />
-                    </div>
-                  </header>
-                  <div className="list">
-                    <DataCard
-                      type="minTemp"
-                      title="Humidité minimale"
-                      value={Math.min(...selectedValues) + " %"}
-                    />
-                    <DataCard
-                      type="temperature"
-                      title="Humidité moyenne"
-                      value={average(selectedValues).toFixed(1) + " %"}
-                    />
-                    <DataCard
-                      type="maxTemp"
-                      title="Humidité maximale"
-                      value={Math.max(...selectedValues) + " %"}
-                    />
-                    <div className={styles.chart}>
-                      <LineChart
-                        chartData={chartData}
-                        min={Math.min(...selectedValues) - 2}
-                        max={Math.max(...selectedValues) + 2}
-                      />
-                    </div>
-                  </div>
-                </article>
-              </article>
-            )}
-            {category === "pression" && (
-              <article className={`${styles.data} reveal`}>
-                <DataCard title="Dernière pression relevée" value="994 hPa" />
-
-                <article className={styles.tracking}>
-                  <header className={styles.header}>
-                    <h2>Pression hPa</h2>
-                    <div className={styles.dateSelector}>
-                      <Arrow className={styles.previous} />
-                      <span className={styles.day}>Aujourd'hui</span>
-                      <Arrow className={styles.next} />
-                    </div>
-                  </header>
-                  <div className="list">
-                    <DataCard
-                      type="minTemp"
-                      title="Pression minimale"
-                      value="968 hPa"
-                    />
-                    <DataCard
-                      type="temperature"
-                      title="Pression moyenne"
-                      value="1003 hPa"
-                    />
-                    <DataCard
-                      type="maxTemp"
-                      title="Pression maximale"
-                      value="1100 hPa"
-                    />
-                    <div className={styles.chart}>
-                      <LineChart chartData={chartData} min={0} max={35} />
-                    </div>
-                  </div>
-                </article>
-              </article>
-            )}
-            {category === "sound-level" && (
-              <article className={`${styles.data} reveal`}>
-                <DataCard title="Dernier volume relevé" value="60 dB" />
-
-                <article className={styles.tracking}>
-                  <header className={styles.header}>
-                    <h2>Niveau sonore dB</h2>
-                    <div className={styles.dateSelector}>
-                      <Arrow className={styles.previous} />
-                      <span className={styles.day}>Aujourd'hui</span>
-                      <Arrow className={styles.next} />
-                    </div>
-                  </header>
-                  <div className="list">
-                    <DataCard
-                      type="minTemp"
-                      title="Niveau minimal"
-                      value="19 dB"
-                    />
-                    <DataCard
-                      type="temperature"
-                      title="Niveau moyen"
-                      value="43 dB"
-                    />
-                    <DataCard
-                      type="maxTemp"
-                      title="Niveau maximal"
-                      value="72 dB"
-                    />
-                    <div className={styles.chart}>
-                      <LineChart chartData={chartData} min={0} max={35} />
-                    </div>
-                  </div>
-                </article>
-              </article>
-            )}
-            {category === "lightning" && (
-              <article className={`${styles.data} reveal`}>
-                <DataCard title="Dernière luminosté relevée" value="1024 lux" />
-
-                <article className={styles.tracking}>
-                  <header className={styles.header}>
-                    <h2>Luminosité lux</h2>
-                    <div className={styles.dateSelector}>
-                      <Arrow className={styles.previous} />
-                      <span className={styles.day}>Aujourd'hui</span>
-                      <Arrow className={styles.next} />
-                    </div>
-                  </header>
-                  <div className="list">
-                    <DataCard
-                      type="minTemp"
-                      title="Luminosité minimale"
-                      value="12 lux"
-                    />
-                    <DataCard
-                      type="temperature"
-                      title="Luminosité moyenne"
-                      value="853 lux"
-                    />
-                    <DataCard
-                      type="maxTemp"
-                      title="Luminosité maximale"
-                      value="2807 lux"
-                    />
-                    <div className={styles.chart}>
-                      <LineChart chartData={chartData} min={0} max={35} />
-                    </div>
-                  </div>
-                </article>
-              </article>
-            )}
-            {category === "gas" && (
-              <article className={`${styles.data} reveal`}>
-                <DataCard title="Dernier taux de CO2 relevé" value="17%" />
-
-                
-                <article className={styles.tracking}>
-                  <header className={styles.header}>
-                    <h2>Taux de CO2 %</h2>
-                    <div className={styles.dateSelector}>
-                      <Arrow className={styles.previous} />
-                      <span className={styles.day}>Aujourd'hui</span>
-                      <Arrow className={styles.next} />
-                    </div>
-                  </header>
-                  <div className="list">
-                    <DataCard type="minTemp" title="Taux minimal" value="9%" />
-                    <DataCard
-                      type="temperature"
-                      title="Taux moyen"
-                      value="16%"
-                    />
-                    <DataCard type="maxTemp" title="Taux maximal" value="40%" />
-                    <div className={styles.chart}>
-                      <LineChart chartData={chartData} min={0} max={35} />
-                    </div>
-                  </div>
-                </article>
-              </article>
-            )*/}
           </section>
         </div>
       )}

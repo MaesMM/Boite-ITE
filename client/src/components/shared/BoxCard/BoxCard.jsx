@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const BoxCard = ({
   type,
-  boxUuid,
+  uuid,
   selectedBox,
   setSelectedBox,
   link,
@@ -14,16 +14,13 @@ const BoxCard = ({
   return (
     <article
       className={styles.container}
-      onClick={() => type === "selection" && setSelectedBox(boxUuid)}
+      onClick={() => type === "selection" && setSelectedBox(uuid)}
     >
       <Box className={styles.icon} />
       {type === "configuration" && (
         <>
           <span className={styles.text}>{macAddress}</span>
-          <Link
-            to={`/devices/${boxUuid && boxUuid}/configure`}
-            className="button"
-          >
+          <Link to={`/devices/${uuid && uuid}/configure`} className="button">
             Configurer
           </Link>
         </>
@@ -31,7 +28,7 @@ const BoxCard = ({
       {type === "assign" && (
         <>
           <span className={styles.text}>{macAddress}</span>
-          <Link to={`/devices/${boxUuid}/configure`} className="button">
+          <Link to={`/devices/${uuid}/configure`} className="button">
             Configurer
           </Link>
         </>
@@ -40,10 +37,8 @@ const BoxCard = ({
       {type === "selection" && (
         <>
           <span className={styles.text}>{name}</span>
-          <div
-            className={`button ${selectedBox === boxUuid && styles.selected}`}
-          >
-            {selectedBox === boxUuid ? "Sélectionnée" : "Sélectionner"}
+          <div className={`button ${selectedBox === uuid && styles.selected}`}>
+            {selectedBox === uuid ? "Sélectionnée" : "Sélectionner"}
           </div>
         </>
       )}
