@@ -64,5 +64,9 @@ urlpatterns = [
     path("data/get/<str:box_uuid>/latest/",
          views.dataGetLatest, name="data_get_latest"),
     path("data/get/<str:box_uuid>/today/",
-         views.dataGetToday, name="data_get_today")
+         views.dataGetToday, name="data_get_today"),
+
+
+    #! -- MISC --
+    path("ipAddress/", views.getIpAddress, name="get_ip_address")
 ]

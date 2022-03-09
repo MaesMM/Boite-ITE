@@ -17,6 +17,7 @@ const Dashboard = () => {
   const [buildings, setBuildings] = useState([]);
   const [newBoxes, setNewBoxes] = useState([]);
   const [count, setCount] = useState("--");
+  const [address, setAddress] = useState("--");
 
   const { refresh } = useContext(refreshContext);
 
@@ -30,6 +31,7 @@ const Dashboard = () => {
     api.get("/boxes/new/").then((res) => setNewBoxes(res.data));
 
     api.get("/data/get-total/today/").then((res) => setCount(res.data));
+    api.get("/ipAddress/").then((res) => setAddress(res.data));
   }, []);
 
   useEffect(() => {
@@ -132,7 +134,7 @@ const Dashboard = () => {
           </div>
         </section>
       </main>
-      <Connection />
+      <Connection address={address} />
     </div>
   );
 };

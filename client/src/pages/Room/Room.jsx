@@ -23,6 +23,7 @@ import { useForm } from "react-hook-form";
 const Room = () => {
   const { uuid } = useParams();
   const navigate = useNavigate();
+
   const [sampling, setSampling] = useState(false);
   const [category, setCategory] = useState({});
   const [roomData, setRoomData] = useState(null);
@@ -30,9 +31,12 @@ const Room = () => {
 
   const [timeChanged, setTimeChanged] = useState(false);
 
-  const [boxes, setBoxes] = useState([]);
+  const [boxList, setBoxList] = useState([]);
   const [data, setData] = useState(null);
   const [last, setLast] = useState(null);
+
+  const [categories, setCategories] = useState([]);
+  const [selectedBox, setSelectedBox] = useState(null);
 
   const onlyNumbers = (e) => {
     !timeChanged && setTimeChanged(true);
@@ -40,9 +44,6 @@ const Room = () => {
       .replace(/[^0-9.]/g, "")
       .replace(/(\..*?)\..*/g, "$1");
   };
-
-  const [categories, setCategories] = useState([]);
-  const [selectedBox, setSelectedBox] = useState(null);
 
   useEffect(() => {
     api.get("/data-type/all/").then((res) => {
@@ -55,7 +56,7 @@ const Room = () => {
     window.scrollTo(0, 0);
     api.get(`/room/${uuid}/`).then((res) => {
       setRoomData(res.data);
-      setBoxes(res.data.boxes);
+      setBoxList(res.data.boxes);
     });
   }, [uuid]);
 
@@ -70,13 +71,16 @@ const Room = () => {
   }, [sampling]);
 
   useEffect(() => {
-    selectedBox &&
-      api.get(`/data/get/${selectedBox}/today/`).then((res) => {
+    let box = boxList.find((box) => box.mac === selectedBox);
+
+    console.log(box);
+    box &&
+      api.get(`/data/get/${box.uuid}/today/`).then((res) => {
         setData(res.data);
       });
 
-    selectedBox &&
-      api.get(`/data/get/${selectedBox}/latest/`).then((res) => {
+    box &&
+      api.get(`/data/get/${box.uuid}/latest/`).then((res) => {
         setLast(res.data);
       });
   }, [selectedBox]);
@@ -203,6 +207,8 @@ const Room = () => {
     setTimeChanged(false);
   };
 
+  useEffect(() => console.log(selectedBox), [selectedBox]);
+
   return (
     <main>
       <header className={styles.pageHead}>
@@ -228,21 +234,26 @@ const Room = () => {
           <Delete />
         </div>
       </header>
-      {boxes.length > 0 ? (
+      {boxList.length > 0 ? (
         <section className="section">
           <h2 className="sectionTitle">Sélectionnez une boite</h2>
-          {boxes.map((box) => {
-            return (
-              <BoxCard
-                key={box.uuid}
-                type="selection"
-                uuid={box.uuid}
-                box={selectedBox}
-                setBox={setSelectedBox}
-                name={box.name}
-              />
-            );
-          })}
+          <div className={`row wrap ${styles.row}`}>
+            {boxList.map((box, index) => {
+              console.log(index + " : " + box.uuid);
+              return (
+                <BoxCard
+                  key={box.mac}
+                  boxUuid={box.uuid}
+                  name={box.name}
+                  type="selection"
+                  selectedBox={selectedBox}
+                  setSelectedBox={setSelectedBox}
+                />
+              );
+            })}
+
+            {console.log("\n")}
+          </div>
         </section>
       ) : (
         <InfoMessage
@@ -285,16 +296,15 @@ const Room = () => {
               <label className="label">Intervale de relevés</label>
               <div className={styles.intervalRow}>
                 <div className="input timeInput">
-                  {console.log(boxes.find((box) => (box.uuid = selectedBox)))}
                   <input
                     {...register("hours")}
                     type="text"
                     defaultValue={
-                      boxes.find((box) => (box.uuid = selectedBox)) &&
-                      boxes.find((box) => (box.uuid = selectedBox))
+                      boxList.find((box) => (box.uuid = selectedBox)) &&
+                      boxList.find((box) => (box.uuid = selectedBox))
                         .collect_frequency &&
                       Math.floor(
-                        (boxes.find((box) => (box.uuid = selectedBox))
+                        (boxList.find((box) => (box.uuid = selectedBox))
                           .collect_frequency /
                           (1000 * 60 * 60)) %
                           24
@@ -308,11 +318,11 @@ const Room = () => {
                     {...register("minutes")}
                     type="text"
                     defaultValue={
-                      boxes.find((box) => (box.uuid = selectedBox)) &&
-                      boxes.find((box) => (box.uuid = selectedBox))
+                      boxList.find((box) => (box.uuid = selectedBox)) &&
+                      boxList.find((box) => (box.uuid = selectedBox))
                         .collect_frequency &&
                       Math.floor(
-                        (boxes.find((box) => (box.uuid = selectedBox))
+                        (boxList.find((box) => (box.uuid = selectedBox))
                           .collect_frequency /
                           (1000 * 60)) %
                           60
@@ -326,11 +336,11 @@ const Room = () => {
                     {...register("seconds")}
                     type="text"
                     defaultValue={
-                      boxes.find((box) => (box.uuid = selectedBox)) &&
-                      boxes.find((box) => (box.uuid = selectedBox))
+                      boxList.find((box) => (box.uuid = selectedBox)) &&
+                      boxList.find((box) => (box.uuid = selectedBox))
                         .collect_frequency &&
                       Math.floor(
-                        (boxes.find((box) => (box.uuid = selectedBox))
+                        (boxList.find((box) => (box.uuid = selectedBox))
                           .collect_frequency /
                           1000) %
                           60

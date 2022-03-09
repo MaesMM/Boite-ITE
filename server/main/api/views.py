@@ -9,6 +9,8 @@ from rest_framework.mixins import UpdateModelMixin
 from .serializers import *
 from .models import *
 
+
+import socket
 # Create your views here.
 
 
@@ -467,3 +469,10 @@ def dataTotalToday(request):
     count = len(dataSerialized.data)
 
     return Response(count)
+
+
+@api_view(["GET"])
+def getIpAddress(request):
+    hostname = socket.gethostname()
+    ip_address = socket.gethostbyname(hostname)
+    return Response(ip_address)
