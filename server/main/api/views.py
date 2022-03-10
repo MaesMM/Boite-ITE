@@ -298,13 +298,19 @@ def roomDelete(request, uuid):
 @ api_view(["POST"])
 def dataTypeCreate(request):
 
-    serializer = DataTypeSerializer(
-        data=request.data)
+    data = request.data
 
-    if serializer.is_valid():
-        serializer.save()
+    try:
+        Box.objects.get(mac=data["mac"])
+        return Response("Box already registered")
+    except:  # S'il n'y a pas de bote possédant la même addresse mac
+        serializer = DataTypeSerializer(
+            data=request.data)
 
-    return Response(serializer.data)
+        if serializer.is_valid():
+            serializer.save()
+
+        return Response(serializer.data)
 
 
 @ api_view(["GET"])
@@ -472,6 +478,20 @@ def dataTotalToday(request):
     count = len(dataSerialized.data)
 
     return Response(count)
+
+
+@api_view(["GET"])
+def getIntervals(request):
+
+    dataToPass = []
+
+    boxes = Box.objects.all()
+
+    for box in boxes:
+        el = {"mac": box.mac, "interval": box.collect_frequency}
+        dataToPass.append(el)
+
+    return Response(dataToPass)
 
 
 @ api_view(["GET"])

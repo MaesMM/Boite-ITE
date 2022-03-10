@@ -25,6 +25,7 @@ urlpatterns = [
     path("box/<str:uuid>/", views.boxDetail, name='box_detail'),
     path("box/update/<str:uuid>/", views.boxUpdate, name='box_update'),
     path("box/assign/<str:uuid>/", views.boxAssign, name='box_assign'),
+    path("boxes/intervals/", views.getIntervals, name='box_intervals'),
 
     path("box/unpair/<str:uuid>/", views.boxUnpair, name='box_unpair'),
 
@@ -66,6 +67,7 @@ urlpatterns = [
          views.dataGetLatest, name="data_get_latest"),
     path("data/get/<str:box_uuid>/today/",
          views.dataGetToday, name="data_get_today"),
+
 
 
     #! -- MISC --

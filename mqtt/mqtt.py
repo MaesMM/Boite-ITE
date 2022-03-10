@@ -33,8 +33,27 @@ def on_message(client, userdata, msg):
 
         url = 'http://127.0.0.1:8000/data/create/'
         data = msg.payload
+
+        dataJSON = json.loads(data)
+
         try:
             x = requests.post(url, data={"data": data})
+        except:
+            pass
+
+        client.publish(
+            topic="/sleep", payload="{'mac':" + str(dataJSON['mac']) + "}")
+
+    if (msg.topic == "/update"):
+
+        url = 'http://localhost:8000/boxes/intervals/'
+        data = msg.payload
+
+        try:
+
+            res = requests.get(url)
+            client.publish(topic="/config", payload=res.text)
+
         except:
             pass
 
@@ -57,6 +76,7 @@ client.username_pw_set("adiboite", password="boiteITE")
 client.connect("10.224.3.230", 1883)
 client.subscribe("/bonjour", 0)
 client.subscribe("/data", 0)
+client.subscribe("/update", 0)
 client.subscribe("/register", 0)
 client.loop_start()
 
@@ -87,11 +107,5 @@ client.loop_start()
 #     pass
 
 while True:
-    string = str(numpy.random.randint(0, 100))
-    delay = int(numpy.random.randint(16, 20))
 
-    data = '{"mac": "69:69:69","battery": 12,"sampling": true,"errors": {"volume": "Sensor not found","gas": "Sensor not found"},"sensors_data": {"temperature": 22,"humidity": 45,"luminosity": 16}}'
-
-    client.publish(topic="/data", payload=data)
-
-    time.sleep(delay)
+    time.sleep(5)
